@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
 
-VERSION="1.0.1"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+VERSION=$(grep '^version:' "${ROOT_DIR}/pubspec.yaml" | sed 's/version: //' | cut -d '+' -f 1 | tr -d ' \r\n')
+if [ -z "$VERSION" ]; then
+  VERSION="1.0.6"
+fi
+
 ARCH="amd64"
 PACKAGE_NAME="zen-clock_${VERSION}_${ARCH}"
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 BUILD_BUNDLE="${ROOT_DIR}/build/linux/x64/release/bundle"
 DEB_DIR="${ROOT_DIR}/build/deb_tmp"
 

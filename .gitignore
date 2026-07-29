@@ -17,6 +17,7 @@
 .pub-cache/
 .pub/
 build/
+dist/
 ephemeral/
 
 # IDE / Editor
