@@ -29,12 +29,15 @@ class ClockSettings extends ChangeNotifier {
 
   bool _showSeconds = true;
   bool _showDate = true;
-  bool _useKhmerDigits = true; // Support Khmer Digits (០, ១, ២, ៣...)
+  bool _useKhmerDigits = true;
+  bool _showWeather = true;
+  bool _showProverb = true;
   bool _oledPixelShift = true;
   bool _preventDisplaySleep = true;
   bool _alwaysOnTop = true;
   double _glassOpacity = 0.65;
   String _fontFamily = 'Kantumruy Pro';
+  String _secondaryTimezone = 'New York (UTC-4)';
 
   ThemePreset get themePreset => _themePreset;
   DisplayMode get displayMode => _displayMode;
@@ -44,11 +47,14 @@ class ClockSettings extends ChangeNotifier {
   bool get showSeconds => _showSeconds;
   bool get showDate => _showDate;
   bool get useKhmerDigits => _useKhmerDigits;
+  bool get showWeather => _showWeather;
+  bool get showProverb => _showProverb;
   bool get oledPixelShift => _oledPixelShift;
   bool get preventDisplaySleep => _preventDisplaySleep;
   bool get alwaysOnTop => _alwaysOnTop;
   double get glassOpacity => _glassOpacity;
   String get fontFamily => _fontFamily;
+  String get secondaryTimezone => _secondaryTimezone;
 
   ClockSettings() {
     _loadFromPrefs();
@@ -59,10 +65,13 @@ class ClockSettings extends ChangeNotifier {
     _showSeconds = prefs.getBool('showSeconds') ?? true;
     _showDate = prefs.getBool('showDate') ?? true;
     _useKhmerDigits = prefs.getBool('useKhmerDigits') ?? true;
+    _showWeather = prefs.getBool('showWeather') ?? true;
+    _showProverb = prefs.getBool('showProverb') ?? true;
     _oledPixelShift = prefs.getBool('oledPixelShift') ?? true;
     _preventDisplaySleep = prefs.getBool('preventDisplaySleep') ?? true;
     _alwaysOnTop = prefs.getBool('alwaysOnTop') ?? true;
     _fontFamily = prefs.getString('fontFamily') ?? 'Kantumruy Pro';
+    _secondaryTimezone = prefs.getString('secondaryTimezone') ?? 'New York (UTC-4)';
     notifyListeners();
   }
 
@@ -74,23 +83,13 @@ class ClockSettings extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setDisplayMode(DisplayMode mode) {
-    _displayMode = mode;
+  void toggleShowWeather(bool val) {
+    _showWeather = val;
     notifyListeners();
   }
 
-  void setOrientation(OrientationMode mode) {
-    _orientationMode = mode;
-    notifyListeners();
-  }
-
-  void setDisplayTarget(DisplayTarget target) {
-    _displayTarget = target;
-    notifyListeners();
-  }
-
-  void toggleShowSeconds(bool val) {
-    _showSeconds = val;
+  void toggleShowProverb(bool val) {
+    _showProverb = val;
     notifyListeners();
   }
 

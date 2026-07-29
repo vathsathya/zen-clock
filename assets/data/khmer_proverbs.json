@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "khmer": "ការអត់ធ្មត់ជាដើមទុននៃជោគជ័យ",
+    "english": "Patience is the foundation of success.",
+    "category": "proverb"
+  },
+  {
+    "id": 2,
+    "khmer": "ចេះពីរៀន មានពីរកែ",
+    "english": "Knowledge comes from learning, wealth comes from diligence.",
+    "category": "proverb"
+  },
+  {
+    "id": 3,
+    "khmer": "ចំណេះជាទ្រព្យជាប់កាយ",
+    "english": "Knowledge is a treasure that accompanies its owner everywhere.",
+    "category": "proverb"
+  },
+  {
+    "id": 4,
+    "khmer": "ស្ទឹងជ្រៅស្ងាត់ជ្រងំ អ្នកប្រាជ្ញស្ងៀមស្ងាត់",
+    "english": "Deep rivers flow silently; wise minds stay calm and peaceful.",
+    "category": "proverb"
+  },
+  {
+    "id": 5,
+    "khmer": "ធ្វើល្អបានល្អ ធ្វើអាក្រក់បានអាក្រក់",
+    "english": "Do good and good will follow you.",
+    "category": "proverb"
+  },
+  {
+    "id": 6,
+    "khmer": "ចិត្តជាធំ ចិត្តជាប្រធាន",
+    "english": "Mind is the master of all actions.",
+    "category": "zen"
+  },
+  {
+    "id": 7,
+    "khmer": "ខ្យល់ដកដង្ហើមចេញចូលជាបច្ចុប្បន្នភាព",
+    "english": "Smile, breathe, and go slowly. The present moment is all we have.",
+    "category": "zen"
+  },
+  {
+    "id": 8,
+    "khmer": "សន្តិភាពចាប់ផ្តើមពីក្នុងចិត្ត",
+    "english": "Peace comes from within. Do not seek it without.",
+    "category": "zen"
+  }
+]
