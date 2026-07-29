@@ -2,17 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum ThemePreset {
-  // Khmer Cultural Themes
-  khmerAngkor, khmerKbach,
-
-  // Original 5 Themes
-  nordic, cyberpunk, flip, oled, glass,
-  
-  // 20 New Themes
-  vaporwave, aurora, forest, matcha, goldenHour,
-  oceanAbyss, espresso, pixel8bit, luxuryGold, sakura,
-  matrix, plasma, midnightBerry, arcticFrost, neoBrutalism,
-  romanSlate, campfire, saturnMinimal, summerPop, chakra
+  // 20 100% Khmer Cultural Themes
+  khmerAngkor,       // ស្ទាយ៍អង្គរមាស
+  khmerKbach,        // ស្ទាយ៍ក្បាច់បុរាណ
+  khmerBayon,        // ស្ទាយ៍ប្រាសាទបាយ័ន
+  khmerBanteaySrei,  // ស្ទាយ៍បន្ទាយស្រី
+  khmerHolPhamuong,  // ស្ទាយ៍ហូលផាមួងខ្មែរ
+  khmerTonleSap,     // ស្ទាយ៍បឹងទន្លេសាប
+  khmerKrama,        // ស្ទាយ៍ក្រមាខ្មែរ
+  khmerSiemRiver,    // ស្ទាយ៍ដងស្ទឹងសៀមរាប
+  khmerPhnomKulen,   // ស្ទាយ៍ភ្នំគូលែន
+  khmerLotus,        // ស្ទាយ៍ផ្កាឈូកខ្មែរ
+  khmerApsara,       // ស្ទាយ៍របាំអប្សរា
+  khmerKepOcean,     // ស្ទាយ៍សមុទ្រកែប
+  khmerWatPhnom,     // ស្ទាយ៍វត្តភ្នំ
+  khmerMangoHarvest, // ស្ទាយ៍ស្វាយកែវរៀត
+  khmerRoyalPalace,  // ស្ទាយ៍ព្រះបរមរាជវាំង
+  khmerPreahVihear,  // ស្ទាយ៍ប្រាសាទព្រះវិហារ
+  khmerSbekThom,     // ស្ទាយ៍ស្បែកធំ
+  khmerGoldenStupa,  // ស្ទាយ៍ចេតិយមាស
+  khmerRiceField,    // ស្ទាយ៍ស្រូវវស្សាខ្មែរ
+  khmerPhnomPenhNight// ស្ទាយ៍រាត្រីភ្នំពេញ
 }
 
 enum DisplayMode { fullscreen, widget }
@@ -29,7 +39,7 @@ class ClockSettings extends ChangeNotifier {
 
   bool _showSeconds = true;
   bool _showDate = true;
-  bool _useKhmerDigits = true;
+  bool _useKhmerDigits = true; // Always true for Khmer cultural themes
   bool _showWeather = true;
   bool _showProverb = true;
   bool _oledPixelShift = true;
@@ -37,7 +47,6 @@ class ClockSettings extends ChangeNotifier {
   bool _alwaysOnTop = true;
   double _glassOpacity = 0.65;
   String _fontFamily = 'Kantumruy Pro';
-  String _secondaryTimezone = 'New York (UTC-4)';
 
   ThemePreset get themePreset => _themePreset;
   DisplayMode get displayMode => _displayMode;
@@ -54,7 +63,6 @@ class ClockSettings extends ChangeNotifier {
   bool get alwaysOnTop => _alwaysOnTop;
   double get glassOpacity => _glassOpacity;
   String get fontFamily => _fontFamily;
-  String get secondaryTimezone => _secondaryTimezone;
 
   ClockSettings() {
     _loadFromPrefs();
@@ -71,15 +79,12 @@ class ClockSettings extends ChangeNotifier {
     _preventDisplaySleep = prefs.getBool('preventDisplaySleep') ?? true;
     _alwaysOnTop = prefs.getBool('alwaysOnTop') ?? true;
     _fontFamily = prefs.getString('fontFamily') ?? 'Kantumruy Pro';
-    _secondaryTimezone = prefs.getString('secondaryTimezone') ?? 'New York (UTC-4)';
     notifyListeners();
   }
 
   void setTheme(ThemePreset preset) {
     _themePreset = preset;
-    if (preset == ThemePreset.khmerAngkor || preset == ThemePreset.khmerKbach) {
-      _useKhmerDigits = true;
-    }
+    _useKhmerDigits = true;
     notifyListeners();
   }
 
