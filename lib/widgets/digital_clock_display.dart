@@ -91,16 +91,19 @@ class DigitalClockDisplay extends StatelessWidget {
         textBaseline: TextBaseline.alphabetic,
         children: [
           Text(hours, style: hourStyle),
-          AnimatedOpacity(
-            duration: const Duration(milliseconds: 250),
-            opacity: (currentSecond % 2 != 0) ? 0.25 : 1.0,
-            child: Text(':', style: minuteStyle),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 250),
+              opacity: (currentSecond % 2 != 0) ? 0.25 : 1.0,
+              child: Text(':', style: minuteStyle),
+            ),
           ),
           Text(minutes, style: minuteStyle),
           if (settings.showSeconds || amPm.isNotEmpty) ...[
-            const SizedBox(width: 16),
+            SizedBox(width: isPortrait ? 12 : 20),
             Padding(
-              padding: const EdgeInsets.only(bottom: 24),
+              padding: EdgeInsets.only(bottom: clockFontSize * 0.06),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -108,7 +111,7 @@ class DigitalClockDisplay extends StatelessWidget {
                 children: [
                   if (settings.showSeconds) ...[
                     Text(seconds, style: secondsStyle),
-                    if (amPm.isNotEmpty) const SizedBox(width: 10),
+                    if (amPm.isNotEmpty) const SizedBox(width: 8),
                   ],
                   if (amPm.isNotEmpty)
                     Text(amPm, style: amPmStyle),

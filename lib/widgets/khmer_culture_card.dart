@@ -158,9 +158,10 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
                           style: FontService.getTextStyle(
                             widget.settings.fontFamily,
                             TextStyle(
-                              fontSize: proverbFontSize,
-                              color: Colors.white.withOpacity(0.85),
-                              fontStyle: FontStyle.italic,
+                              fontSize: proverbFontSize + 2,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.95),
+                              fontStyle: FontStyle.normal,
                             ),
                           ),
                           textAlign: TextAlign.center,

@@ -434,42 +434,50 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                                     primaryColor: style.primaryColor,
                                     textColor: style.textColor,
                                   )
-                                : Column(
-                                     mainAxisAlignment: MainAxisAlignment.center,
-                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                     children: [
-                                       const Spacer(flex: 1),
+                                : LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final verticalGap = (constraints.maxHeight * 0.02).clamp(4.0, 16.0);
+                                      return Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          const Spacer(flex: 3),
 
-                                       // Digital Clock Display (Perfectly Centered)
-                                       DigitalClockDisplay(
-                                         settings: settings,
-                                         hours: hours,
-                                         minutes: minutes,
-                                         seconds: seconds,
-                                         amPm: amPm,
-                                         primaryColor: style.primaryColor,
-                                         textColor: style.textColor,
-                                         isPortrait: isPortrait,
-                                         currentSecond: _now.second,
-                                       ),
+                                          // Digital Clock Display (Perfect Dead Center Alignment)
+                                          Center(
+                                            child: DigitalClockDisplay(
+                                              settings: settings,
+                                              hours: hours,
+                                              minutes: minutes,
+                                              seconds: seconds,
+                                              amPm: amPm,
+                                              primaryColor: style.primaryColor,
+                                              textColor: style.textColor,
+                                              isPortrait: isPortrait,
+                                              currentSecond: _now.second,
+                                            ),
+                                          ),
 
-                                       const SizedBox(height: 12),
+                                          SizedBox(height: verticalGap),
 
-                                       // Weather Strip Directly Below Digital Clock
-                                       _buildHorizontalWeatherStrip(settings, style),
+                                          // Weather Strip Directly Below Digital Clock
+                                          _buildHorizontalWeatherStrip(settings, style),
 
-                                       const Spacer(flex: 1),
+                                          const Spacer(flex: 2),
 
-                                       // Khmer Culture Info Card
-                                       KhmerCultureCard(
-                                         settings: settings,
-                                         date: _now,
-                                         primaryColor: style.primaryColor,
-                                         cardColor: style.cardColor,
-                                       ),
-                                       const SizedBox(height: 32),
-                                     ],
-                                   ),
+                                          // Khmer Culture Info Card
+                                          KhmerCultureCard(
+                                            settings: settings,
+                                            date: _now,
+                                            primaryColor: style.primaryColor,
+                                            cardColor: style.cardColor,
+                                          ),
+
+                                          SizedBox(height: verticalGap),
+                                        ],
+                                      );
+                                    },
+                                  ),
                       ),
                     ),
                   ),
