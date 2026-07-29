@@ -62,7 +62,11 @@ void main() async {
       await windowManager.focus();
     });
   } else {
-    // Android / Mobile Immersive Fullscreen Setup
+    // Android / Mobile Immersive Fullscreen & Landscape Orientation Setup
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
