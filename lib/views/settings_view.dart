@@ -421,6 +421,97 @@ class SettingsDialog extends StatelessWidget {
                     ),
                   ),
 
+                  const SizedBox(height: 24),
+                  // Section 8: About Developer
+                  _buildSectionTitle(isKhmer ? '👨‍💻 អំពីអ្នកអភិវឌ្ឍន៍ (About Developer)' : '👨‍💻 About Developer'),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: textColor.withOpacity(0.06),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: textColor.withOpacity(0.12), width: 1),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: textColor.withOpacity(0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(Icons.code_rounded, color: textColor, size: 24),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    isKhmer ? 'វ៉ាត សត្យា (Vath Sathya)' : 'Vath Sathya',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: textColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    'Software Engineer & Creator of Zen Clock',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: textColor.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(color: textColor.withOpacity(0.12), height: 1),
+                        const SizedBox(height: 12),
+                        Text(
+                          isKhmer
+                              ? 'Zen Clock ត្រូវបានបង្កើតឡើងយ៉ាងសម្រិតសម្រាំងបំផុត ដើម្បីរួមចំណែកលើកស្ទួយវប្បធម៌ខ្មែរ ប្រទិន្នទិនចន្ទគតិ ថ្ងៃសីល សុភាសិត ព្រមទាំងប្រធានបទ ២៥ ខេត្តក្រុង នៃព្រះរាជាណាចក្រកម្ពុជា ជាមួយស្ថាបត្យកម្ម AMOLED ល្បឿនលឿន & ស្រាលបំផុត។'
+                              : 'Zen Clock is crafted with passion for Khmer culture, lunar calendar, holy days, and 25 Cambodian province themes with ultra-lightweight AMOLED performance for Linux, Windows, and Android.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            height: 1.4,
+                            color: textColor.withOpacity(0.85),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'GitHub Repository',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: textColor.withOpacity(0.7),
+                              ),
+                            ),
+                            SelectableText(
+                              'github.com/vathsathya/zen-clock',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: textColor.withOpacity(0.9),
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
                   const SizedBox(height: 28),
                   // Reset Button
                   ElevatedButton.icon(
