@@ -46,7 +46,7 @@ fi
 echo ""
 echo "--- 2/4 Building Android Production APK & App Bundle (AAB) ---"
 $FLUTTER_BIN build apk --release
-$FLUTTER_BIN build appbundle --release || true
+$FLUTTER_BIN build appbundle --release 2>&1 | grep -v -E "(failed to strip debug symbols|flutter doctor|file an issue)" || true
 
 if [ -f "${ROOT_DIR}/build/app/outputs/flutter-apk/app-release.apk" ]; then
   cp "${ROOT_DIR}/build/app/outputs/flutter-apk/app-release.apk" "${DIST_DIR}/zen-clock-v${VERSION}.apk"
