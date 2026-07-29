@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Zen Clock
+Comment=Ultra-Lightweight Zen Digital Clock with 100% Khmer Culture & Weather Forecast
+Exec=/usr/bin/zen-clock
+Icon=zen-clock
+Terminal=false
+Type=Application
+Categories=Utility;Clock;DesktopSettings;
+Keywords=clock;zen;khmer;calendar;weather;

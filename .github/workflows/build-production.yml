@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   build-linux:
-    name: Build Linux Desktop Executable
+    name: Build Linux Desktop & .deb Installer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -34,7 +34,8 @@ jobs:
             libstdc++6 \
             libayatana-appindicator3-dev \
             libdbus-1-dev \
-            libglib2.0-dev
+            libglib2.0-dev \
+            dpkg-dev
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
@@ -56,17 +57,24 @@ jobs:
       - name: Build Linux Release
         run: flutter build linux --release
 
-      - name: Compress Linux Build Artifact
+      - name: Compress Linux Portable Archive
         run: tar -czvf zen-clock-linux-x64.tar.gz -C build/linux/x64/release/bundle .
 
-      - name: Upload Linux Artifact
+      - name: Build Ubuntu .deb Installer Package
+        run: |
+          chmod +x packaging/linux/build_deb.sh
+          ./packaging/linux/build_deb.sh
+
+      - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: zen-clock-linux-x64
-          path: zen-clock-linux-x64.tar.gz
+          name: zen-clock-linux-packages
+          path: |
+            zen-clock-linux-x64.tar.gz
+            zen-clock_*.deb
 
   build-windows:
-    name: Build Windows Desktop Executable
+    name: Build Windows Desktop & .exe Installer
     runs-on: windows-latest
     steps:
       - name: Checkout repository
@@ -92,14 +100,21 @@ jobs:
       - name: Build Windows Release
         run: flutter build windows --release
 
-      - name: Compress Windows Build Artifact
+      - name: Compress Windows Portable ZIP
         run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath zen-clock-windows-x64.zip -CompressionLevel Fastest
 
-      - name: Upload Windows Artifact
+      - name: Build Windows Setup .exe Installer (Inno Setup)
+        uses: sayyid5416/innosetup-action@v1
+        with:
+          filepath: windows/installer/zen_clock_setup.iss
+
+      - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: zen-clock-windows-x64
-          path: zen-clock-windows-x64.zip
+          name: zen-clock-windows-packages
+          path: |
+            zen-clock-windows-x64.zip
+            ZenClock-Setup-*.exe
 
   build-android:
     name: Build Android APK
@@ -156,6 +171,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            zen-clock-linux-x64/zen-clock-linux-x64.tar.gz
-            zen-clock-windows-x64/zen-clock-windows-x64.zip
+            zen-clock-linux-packages/zen-clock-linux-x64.tar.gz
+            zen-clock-linux-packages/*.deb
+            zen-clock-windows-packages/zen-clock-windows-x64.zip
+            zen-clock-windows-packages/ZenClock-Setup-*.exe
             zen-clock-android-apk/app-release.apk
