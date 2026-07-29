@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum ThemePreset { nordic, cyberpunk, flip, oled, glass }
+enum ThemePreset {
+  // Original 5 Themes
+  nordic, cyberpunk, flip, oled, glass,
+  
+  // 20 New Themes
+  vaporwave, aurora, forest, matcha, goldenHour,
+  oceanAbyss, espresso, pixel8bit, luxuryGold, sakura,
+  matrix, plasma, midnightBerry, arcticFrost, neoBrutalism,
+  romanSlate, campfire, saturnMinimal, summerPop, chakra
+}
+
 enum DisplayMode { fullscreen, widget }
 enum OrientationMode { auto, horizontal, vertical }
 enum DisplayTarget { secondary, primary }
