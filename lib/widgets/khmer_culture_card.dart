@@ -34,14 +34,16 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
     final quote = KhmerCultureService.getDailyDhammaQuote(widget.date.add(Duration(days: _quoteOffset)));
     final upcomingHoliday = KhmerCultureService.getUpcomingHolidayCountdown(widget.date, useKhmerDigits: widget.settings.useKhmerDigits);
 
-    final lunarFontSize = (screenWidth * 0.022).clamp(20.0, 30.0);
-    final zodiacFontSize = (screenWidth * 0.017).clamp(16.0, 24.0);
-    final holyDayFontSize = (screenWidth * 0.016).clamp(16.0, 22.0);
-    final proverbFontSize = (screenWidth * 0.016).clamp(15.0, 22.0);
+    final lunarFontSize = (screenWidth * 0.022).clamp(16.0, 26.0);
+    final zodiacFontSize = (screenWidth * 0.017).clamp(14.0, 20.0);
+    final holyDayFontSize = (screenWidth * 0.016).clamp(14.0, 20.0);
+    final proverbFontSize = (screenWidth * 0.016).clamp(14.0, 20.0);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Colors.transparent,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        color: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,6 +181,7 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
           ],
         ],
       ),
+    ),
     );
   }
 }

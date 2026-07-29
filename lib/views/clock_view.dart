@@ -163,6 +163,17 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     _startHideControlsTimer();
   }
 
+  void _toggleOverlayControls() {
+    setState(() {
+      _showOverlayControls = !_showOverlayControls;
+    });
+    if (_showOverlayControls) {
+      _startHideControlsTimer();
+    } else {
+      _hideControlsTimer?.cancel();
+    }
+  }
+
   void _toggleFullScreen() async {
     setState(() {
       _isFullScreen = !_isFullScreen;
@@ -369,6 +380,9 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
               Positioned.fill(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    _toggleOverlayControls();
+                  },
                   onPanStart: (details) {
                     if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
                       try {

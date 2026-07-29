@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'models/clock_settings.dart';
 import 'services/display_service.dart';
 import 'services/tray_service.dart';
@@ -62,12 +63,15 @@ void main() async {
       await windowManager.focus();
     });
   } else {
-    // Android / Mobile Immersive Fullscreen & Landscape Orientation Setup
+    // Android / Mobile Immersive Fullscreen, Landscape & Wakelock Setup
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    try {
+      await WakelockPlus.enable();
+    } catch (_) {}
   }
 
   runApp(

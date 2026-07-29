@@ -28,7 +28,15 @@ class DigitalClockDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double clockFontSize = isPortrait ? 260.0 : 360.0;
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+
+    // Dynamically scale font sizes to fit phone, tablet, and desktop screens seamlessly
+    final double baseFontSize = isPortrait
+        ? (screenWidth * 0.35).clamp(120.0, 260.0)
+        : (screenHeight * 0.45).clamp(140.0, 360.0);
+    final double clockFontSize = baseFontSize;
 
     final hourStyle = FontService.getTextStyle(
       settings.fontFamily,
