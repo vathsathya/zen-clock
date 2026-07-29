@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -10,7 +12,16 @@ import 'views/clock_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
+
+  final bool isDesktop = Platform.isLinux || Platform.isWindows || Platform.isMacOS;
+
+  if (isDesktop) {
+    try {
+      await windowManager.ensureInitialized();
+    } catch (e) {
+      debugPrint('windowManager init error: $e');
+    }
+  }
 
   bool initialUseKhmerDigits = true;
   DisplayMode initialDisplayMode = DisplayMode.clock;
@@ -23,33 +34,37 @@ void main() async {
     }
   } catch (_) {}
 
-  // Initialize System Tray with persistent language & display mode preferences
-  try {
-    await TrayService.instance.init(
-      useKhmerDigits: initialUseKhmerDigits,
-      displayMode: initialDisplayMode,
+  // Initialize System Tray only on Desktop
+  if (isDesktop) {
+    try {
+      await TrayService.instance.init(
+        useKhmerDigits: initialUseKhmerDigits,
+        displayMode: initialDisplayMode,
+      );
+    } catch (e) {
+      debugPrint('Tray initialization error: $e');
+    }
+
+    // Initialize Display Monitoring Service
+    DisplayService.instance.init();
+
+    // Desktop Window Options Setup
+    WindowOptions windowOptions = const WindowOptions(
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
     );
-  } catch (e) {
-    debugPrint('Tray initialization error: $e');
+
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await DisplayService.instance.checkAndApplyDisplayPolicy();
+      await windowManager.setFullScreen(true);
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  } else {
+    // Android / Mobile Immersive Fullscreen Setup
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
-
-  // Initialize Display Monitoring Service
-  DisplayService.instance.init();
-
-  // Desktop Window Options Setup
-  WindowOptions windowOptions = const WindowOptions(
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
-  );
-
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    // Apply Strict Secondary Screen Policy
-    await DisplayService.instance.checkAndApplyDisplayPolicy();
-    await windowManager.setFullScreen(true);
-    await windowManager.show();
-    await windowManager.focus();
-  });
 
   runApp(
     ChangeNotifierProvider(

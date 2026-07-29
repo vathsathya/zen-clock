@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
@@ -13,6 +14,7 @@ class DisplayService {
   bool _isProcessing = false;
 
   void init() {
+    if (!Platform.isLinux && !Platform.isWindows && !Platform.isMacOS) return;
     // Periodically monitor display count changes (instant hot-plugging of 2nd monitor)
     _monitorTimer?.cancel();
     _monitorTimer = Timer.periodic(const Duration(seconds: 2), (_) {
@@ -23,6 +25,7 @@ class DisplayService {
   }
 
   Future<void> checkAndApplyDisplayPolicy() async {
+    if (!Platform.isLinux && !Platform.isWindows && !Platform.isMacOS) return;
     if (_isProcessing) return;
     _isProcessing = true;
 

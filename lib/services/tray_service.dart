@@ -17,6 +17,7 @@ class TrayService with TrayListener {
     bool useKhmerDigits = true,
     DisplayMode displayMode = DisplayMode.clock,
   }) async {
+    if (!Platform.isLinux && !Platform.isWindows && !Platform.isMacOS) return;
     trayManager.addListener(this);
     
     // Set Tray Icon
@@ -29,6 +30,7 @@ class TrayService with TrayListener {
     bool useKhmerDigits = true,
     DisplayMode displayMode = DisplayMode.clock,
   }) async {
+    if (!Platform.isLinux && !Platform.isWindows && !Platform.isMacOS) return;
     final String khmerLangPrefix = useKhmerDigits ? '✓ ' : '';
     final String englishLangPrefix = !useKhmerDigits ? '✓ ' : '';
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -166,7 +167,17 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     setState(() {
       _isFullScreen = !_isFullScreen;
     });
-    await windowManager.setFullScreen(_isFullScreen);
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      try {
+        await windowManager.setFullScreen(_isFullScreen);
+      } catch (_) {}
+    } else {
+      if (_isFullScreen) {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      } else {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      }
+    }
   }
 
   @override
@@ -359,7 +370,11 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onPanStart: (details) {
-                    windowManager.startDragging();
+                    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+                      try {
+                        windowManager.startDragging();
+                      } catch (_) {}
+                    }
                   },
                   onDoubleTap: () {
                     _toggleFullScreen();
