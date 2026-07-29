@@ -148,13 +148,20 @@ jobs:
         run: flutter pub get
 
       - name: Build Android APK Release
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            TAG_NAME="${{ github.ref_name }}"
+            cp build/app/outputs/flutter-apk/app-release.apk "zen-clock-${TAG_NAME}.apk"
+          else
+            cp build/app/outputs/flutter-apk/app-release.apk zen-clock-android-release.apk
+          fi
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: zen-clock-android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: zen-clock-*.apk
 
   release:
     name: Create GitHub Release
@@ -175,4 +182,4 @@ jobs:
             zen-clock-linux-packages/*.deb
             zen-clock-windows-packages/zen-clock-windows-x64.zip
             zen-clock-windows-packages/ZenClock-Setup-*.exe
-            zen-clock-android-apk/app-release.apk
+            zen-clock-android-apk/zen-clock-*.apk
