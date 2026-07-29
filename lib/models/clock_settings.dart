@@ -2,27 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum ThemePreset {
-  // 20 100% Khmer Cultural Themes
-  khmerAngkor,       // ស្ទាយ៍អង្គរមាស
-  khmerKbach,        // ស្ទាយ៍ក្បាច់បុរាណ
-  khmerBayon,        // ស្ទាយ៍ប្រាសាទបាយ័ន
-  khmerBanteaySrei,  // ស្ទាយ៍បន្ទាយស្រី
-  khmerHolPhamuong,  // ស្ទាយ៍ហូលផាមួងខ្មែរ
-  khmerTonleSap,     // ស្ទាយ៍បឹងទន្លេសាប
-  khmerKrama,        // ស្ទាយ៍ក្រមាខ្មែរ
-  khmerSiemRiver,    // ស្ទាយ៍ដងស្ទឹងសៀមរាប
-  khmerPhnomKulen,   // ស្ទាយ៍ភ្នំគូលែន
-  khmerLotus,        // ស្ទាយ៍ផ្កាឈូកខ្មែរ
-  khmerApsara,       // ស្ទាយ៍របាំអប្សរា
-  khmerKepOcean,     // ស្ទាយ៍សមុទ្រកែប
-  khmerWatPhnom,     // ស្ទាយ៍វត្តភ្នំ
-  khmerMangoHarvest, // ស្ទាយ៍ស្វាយកែវរៀត
-  khmerRoyalPalace,  // ស្ទាយ៍ព្រះបរមរាជវាំង
-  khmerPreahVihear,  // ស្ទាយ៍ប្រាសាទព្រះវិហារ
-  khmerSbekThom,     // ស្ទាយ៍ស្បែកធំ
-  khmerGoldenStupa,  // ស្ទាយ៍ចេតិយមាស
-  khmerRiceField,    // ស្ទាយ៍ស្រូវវស្សាខ្មែរ
-  khmerPhnomPenhNight// ស្ទាយ៍រាត្រីភ្នំពេញ
+  // 25 Cambodian Provinces Theme Series (២៥ ខេត្តក្រុង នៃព្រះរាជាណាចក្រកម្ពុជា)
+  battambang,       // 🍌 ខេត្តបាត់ដំបង (Ta Dambong & Golden Oranges) - HIGHLIGHT!
+  siemReap,         // 🏛️ ខេត្តសៀមរាប (Angkor Wat Heritage)
+  phnomPenh,        // 👑 រាជធានីភ្នំពេញ (Royal Palace & Riverside Glow)
+  kep,              // 🦀 ខេត្តកែប (Kep Crab & Blue Sea)
+  sihanoukville,    // 🏖️ ខេត្តព្រះសីហនុ (Golden Lions & Turquoise Beach)
+  kampot,           // 🌶️ ខេត្តកំពត (Kampot Black Pepper & Bokor Mist)
+  mondulkiri,       // 🐘 ខេត្តមណ្ឌលគិរី (Pine Forest & Waterfalls)
+  ratanakiri,       // 💎 ខេត្តរតនគិរី (Red Earth & Zircon Gems)
+  preahVihear,      // 🏔️ ខេត្តព្រះវិហារ (Mountain Cliff Temple)
+  kampongChhnang,   // 🏺 ខេត្តកំពង់ឆ្នាំង (Khmer Pottery & Floating Village)
+  kampongSpeu,      // 🌴 ខេត្តកំពង់ស្ពឺ (Palm Sugar Gold)
+  kampongThom,      // 🐟 ខេត្តកំពង់ធំ (Sambor Prei Kuk Brick)
+  kampongCham,      // 🛥️ ខេត្តកំពង់ចាម (Bamboo Bridge & Mekong River)
+  kratie,           // 🎋 ខេត្តក្រចេះ (Irrawaddy Dolphin & Sunset Mekong)
+  stungTreng,       // 🌿 ខេត្តស្ទឹងត្រែង (Sekong River & Wetlands)
+  preyVeng,         // 🌾 ខេត្តព្រៃវែង (Fertile Paddy Fields)
+  svayRieng,        // 🚣 ខេត្តស្វាយរៀង (Border Sun & Lotus Ponds)
+  takeo,            // 🏺 ខេត្តតាកែវ (Phnom Chisor Ancient Cradle)
+  pursat,           // ⛰️ ខេត្តពោធិ៍សាត់ (Cardamom Mountains & Marble)
+  banteayMeanchey,  // 🌾 ខេត្តបន្ទាយមានជ័យ (Banteay Chhmar Ruins)
+  oddarMeanchey,   // 🍃 ខេត្តឧត្តរមានជ័យ (Dangrek Mountain Range)
+  pailin,           // 🌳 ខេត្តប៉ៃលិន (Pailin Gemstones & Peacock)
+  kohKong,          // 🌄 ខេត្តកោះកុង (Mangrove Forests & Estuary)
+  tboungKhmum,      // 🌾 ខេត្តត្បូងឃ្មុំ (Rubber Plantation Emerald)
+  kandal            // 🏛️ ខេត្តកណ្តាល (Koh Dach Silk Island)
 }
 
 enum DisplayMode { fullscreen, widget }
@@ -31,7 +36,7 @@ enum DisplayTarget { secondary, primary }
 enum TimeFormat { h12, h24 }
 
 class ClockSettings extends ChangeNotifier {
-  ThemePreset _themePreset = ThemePreset.khmerAngkor;
+  ThemePreset _themePreset = ThemePreset.battambang; // Highlight Battambang by Default!
   DisplayMode _displayMode = DisplayMode.fullscreen;
   OrientationMode _orientationMode = OrientationMode.auto;
   DisplayTarget _displayTarget = DisplayTarget.secondary;
@@ -39,7 +44,7 @@ class ClockSettings extends ChangeNotifier {
 
   bool _showSeconds = true;
   bool _showDate = true;
-  bool _useKhmerDigits = true; // Always true for Khmer cultural themes
+  bool _useKhmerDigits = true;
   bool _showWeather = true;
   bool _showProverb = true;
   bool _oledPixelShift = true;

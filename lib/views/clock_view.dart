@@ -54,7 +54,7 @@ class _ClockViewState extends State<ClockView> {
     "ស្ទឹងជ្រៅស្ងាត់ជ្រងំ អ្នកប្រាជ្ញស្ងៀមស្ងាត់",
     "ធ្វើល្អបានល្អ ធ្វើអាក្រក់បានអាក្រក់",
     "សន្តិភាពចាប់ផ្តើមពីក្នុងចិត្ត",
-    "ចំណេះជាអាវក្រោះការពារខ្លួន"
+    "បាត់ដំបងដែនដីអស្ចារ្យ ជង្រុកស្រូវកម្ពុជា"
   ];
 
   @override
@@ -97,7 +97,7 @@ class _ClockViewState extends State<ClockView> {
 
   String _toKhmerDigits(String input) {
     const arabic = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const khmer = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+    const khmer = ['<ctrl42>', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
     String result = input;
     for (int i = 0; i < arabic.length; i++) {
       result = result.replaceAll(arabic[i], khmer[i]);
@@ -107,9 +107,22 @@ class _ClockViewState extends State<ClockView> {
 
   ClockStyleData _getStyleData(ThemePreset preset) {
     switch (preset) {
-      case ThemePreset.khmerAngkor:
+      // 1. Battambang Highlight Theme!
+      case ThemePreset.battambang:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍អង្គរមាស (Khmer Angkor Gold)",
+          name: "🍌 ខេត្តបាត់ដំបង (Battambang - លោកតាដំបងក្រញូង & ស្វាយ/ក្រូចមាស)",
+          bgColor: Color(0xFF140C07),
+          cardColor: Color(0xFF26190E),
+          textColor: Color(0xFFFF7F00),
+          accentColor: Color(0xFF00A86B),
+          borderColor: Color(0xFFFF7F00),
+          shadows: [Shadow(color: Color(0xFFFF7F00), blurRadius: 30)],
+        );
+
+      // 2. Siem Reap
+      case ThemePreset.siemReap:
+        return const ClockStyleData(
+          name: "🏛️ ខេត្តសៀមរាប (Siem Reap - Angkor Wat Heritage)",
           bgColor: Color(0xFF0B132B),
           cardColor: Color(0xFF1C2541),
           textColor: Color(0xFFFFD700),
@@ -117,49 +130,35 @@ class _ClockViewState extends State<ClockView> {
           borderColor: Color(0xFFFFD700),
           shadows: [Shadow(color: Color(0xFFFFD700), blurRadius: 25)],
         );
-      case ThemePreset.khmerKbach:
+
+      // 3. Phnom Penh Capital
+      case ThemePreset.phnomPenh:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ក្បាច់បុរាណ (Khmer Kbach Silk)",
-          bgColor: Color(0xFF3D0007),
-          cardColor: Color(0xFF5E000C),
-          textColor: Color(0xFFFBE8A6),
-          accentColor: Color(0xFFD4AF37),
-          borderColor: Color(0xFFD4AF37),
-          shadows: [Shadow(color: Color(0xFFD4AF37), blurRadius: 20)],
+          name: "👑 រាជធានីភ្នំពេញ (Phnom Penh Capital - Royal Riverside)",
+          bgColor: Color(0xFF1F002B),
+          cardColor: Color(0xFF38004D),
+          textColor: Color(0xFF00F3FF),
+          accentColor: Color(0xFFFFD700),
+          borderColor: Color(0xFF00F3FF),
+          shadows: [Shadow(color: Color(0xFF00F3FF), blurRadius: 30)],
         );
-      case ThemePreset.khmerBayon:
+
+      // 4. Kep
+      case ThemePreset.kep:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ប្រាសាទបាយ័ន (Khmer Bayon Stone)",
-          bgColor: Color(0xFF1A1D20),
-          cardColor: Color(0xFF2B303A),
-          textColor: Color(0xFFD1D5DB),
-          accentColor: Color(0xFF7C9885),
-          borderColor: Color(0xFF7C9885),
-          shadows: [Shadow(color: Color(0xFF7C9885), blurRadius: 15)],
+          name: "🦀 ខេត្តកែប (Kep Province - Kep Crab & Blue Sea)",
+          bgColor: Color(0xFF0A192F),
+          cardColor: Color(0xFF172A45),
+          textColor: Color(0xFF64FFDA),
+          accentColor: Color(0xFFFF6B6B),
+          borderColor: Color(0xFF64FFDA),
+          shadows: [Shadow(color: Color(0xFF64FFDA), blurRadius: 20)],
         );
-      case ThemePreset.khmerBanteaySrei:
+
+      // 5. Sihanoukville
+      case ThemePreset.sihanoukville:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍បន្ទាយស្រី (Banteay Srei Pink Sandstone)",
-          bgColor: Color(0xFF3B1E1B),
-          cardColor: Color(0xFF5C2D27),
-          textColor: Color(0xFFFFC6FF),
-          accentColor: Color(0xFFD48C84),
-          borderColor: Color(0xFFD48C84),
-          shadows: [Shadow(color: Color(0xFFD48C84), blurRadius: 20)],
-        );
-      case ThemePreset.khmerHolPhamuong:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ហូលផាមួងខ្មែរ (Khmer Hol Phamuong)",
-          bgColor: Color(0xFF1D0047),
-          cardColor: Color(0xFF3A0CA3),
-          textColor: Color(0xFFF72585),
-          accentColor: Color(0xFF4CC9F0),
-          borderColor: Color(0xFFF72585),
-          shadows: [Shadow(color: Color(0xFFF72585), blurRadius: 25)],
-        );
-      case ThemePreset.khmerTonleSap:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍បឹងទន្លេសាប (Tonle Sap Water Blue)",
+          name: "🏖️ ខេត្តព្រះសីហនុ (Preah Sihanouk - Golden Lions)",
           bgColor: Color(0xFF03045E),
           cardColor: Color(0xFF0077B6),
           textColor: Color(0xFF90E0EF),
@@ -167,99 +166,47 @@ class _ClockViewState extends State<ClockView> {
           borderColor: Color(0xFF90E0EF),
           shadows: [Shadow(color: Color(0xFF90E0EF), blurRadius: 20)],
         );
-      case ThemePreset.khmerKrama:
+
+      // 6. Kampot
+      case ThemePreset.kampot:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ក្រមាខ្មែរ (Khmer Krama Red & White)",
-          bgColor: Color(0xFF2B090A),
-          cardColor: Color(0xFF5E0B0E),
-          textColor: Color(0xFFFDF0D5),
-          accentColor: Color(0xFFC1121F),
-          borderColor: Color(0xFFC1121F),
-          shadows: [Shadow(color: Color(0xFFC1121F), blurRadius: 20)],
-        );
-      case ThemePreset.khmerSiemRiver:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ដងស្ទឹងសៀមរាប (Siem Reap River)",
-          bgColor: Color(0xFF0D1B2A),
-          cardColor: Color(0xFF1B263B),
-          textColor: Color(0xFF52B788),
-          accentColor: Color(0xFFE0E1DD),
-          borderColor: Color(0xFF52B788),
-          shadows: [Shadow(color: Color(0xFF52B788), blurRadius: 20)],
-        );
-      case ThemePreset.khmerPhnomKulen:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ភ្នំគូលែន (Phnom Kulen Mountain)",
-          bgColor: Color(0xFF0F201B),
-          cardColor: Color(0xFF1E352F),
-          textColor: Color(0xFFA3E635),
-          accentColor: Color(0xFF34D399),
-          borderColor: Color(0xFFA3E635),
-          shadows: [Shadow(color: Color(0xFFA3E635), blurRadius: 20)],
-        );
-      case ThemePreset.khmerLotus:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ផ្កាឈូកខ្មែរ (Khmer Lotus Flower)",
-          bgColor: Color(0xFF26101B),
-          cardColor: Color(0xFF3D182B),
-          textColor: Color(0xFFFF85A1),
-          accentColor: Color(0xFF38B000),
-          borderColor: Color(0xFFFF85A1),
-          shadows: [Shadow(color: Color(0xFFFF85A1), blurRadius: 20)],
-        );
-      case ThemePreset.khmerApsara:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍របាំអប្សរា (Apsara Dance Gold)",
-          bgColor: Color(0xFF1C2526),
-          cardColor: Color(0xFF264653),
-          textColor: Color(0xFFF4A261),
-          accentColor: Color(0xFFE76F51),
-          borderColor: Color(0xFFF4A261),
-          shadows: [Shadow(color: Color(0xFFF4A261), blurRadius: 25)],
-        );
-      case ThemePreset.khmerKepOcean:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍សមុទ្រកែប (Kep Ocean Breeze)",
-          bgColor: Color(0xFF0A192F),
-          cardColor: Color(0xFF172A45),
-          textColor: Color(0xFF64FFDA),
-          accentColor: Color(0xFFF4A261),
-          borderColor: Color(0xFF64FFDA),
-          shadows: [Shadow(color: Color(0xFF64FFDA), blurRadius: 20)],
-        );
-      case ThemePreset.khmerWatPhnom:
-        return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍វត្តភ្នំ (Wat Phnom Heritage)",
-          bgColor: Color(0xFF1A1615),
-          cardColor: Color(0xFF2D2421),
+          name: "🌶️ ខេត្តកំពត (Kampot - Black Pepper & Bokor Mist)",
+          bgColor: Color(0xFF12181F),
+          cardColor: Color(0xFF212A35),
           textColor: Color(0xFFD4A373),
           accentColor: Color(0xFFFAEDCD),
           borderColor: Color(0xFFD4A373),
-          shadows: [],
+          shadows: [Shadow(color: Color(0xFFD4A373), blurRadius: 15)],
         );
-      case ThemePreset.khmerMangoHarvest:
+
+      // 7. Mondulkiri
+      case ThemePreset.mondulkiri:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ស្វាយកែវរៀត (Golden Mango Harvest)",
-          bgColor: Color(0xFF1F1A0A),
-          cardColor: Color(0xFF382F12),
-          textColor: Color(0xFFFFB703),
-          accentColor: Color(0xFF2A9D8F),
-          borderColor: Color(0xFFFFB703),
-          shadows: [Shadow(color: Color(0xFFFFB703), blurRadius: 25)],
+          name: "🐘 ខេត្តមណ្ឌលគិរី (Mondulkiri - Pine Forest)",
+          bgColor: Color(0xFF0F201B),
+          cardColor: Color(0xFF1E352F),
+          textColor: Color(0xFFA3E635),
+          accentColor: Color(0xFF90E0EF),
+          borderColor: Color(0xFFA3E635),
+          shadows: [Shadow(color: Color(0xFFA3E635), blurRadius: 20)],
         );
-      case ThemePreset.khmerRoyalPalace:
+
+      // 8. Ratanakiri
+      case ThemePreset.ratanakiri:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ព្រះបរមរាជវាំង (Royal Palace Night)",
-          bgColor: Color(0xFF1F002B),
-          cardColor: Color(0xFF38004D),
-          textColor: Color(0xFFFFD700),
-          accentColor: Color(0xFFF72585),
-          borderColor: Color(0xFFFFD700),
-          shadows: [Shadow(color: Color(0xFFFFD700), blurRadius: 30)],
+          name: "💎 ខេត្តរតនគិរី (Ratanakiri - Red Earth & Gems)",
+          bgColor: Color(0xFF3B1313),
+          cardColor: Color(0xFF5C2323),
+          textColor: Color(0xFF06B6D4),
+          accentColor: Color(0xFFFCA5A5),
+          borderColor: Color(0xFF06B6D4),
+          shadows: [Shadow(color: Color(0xFF06B6D4), blurRadius: 20)],
         );
-      case ThemePreset.khmerPreahVihear:
+
+      // 9. Preah Vihear
+      case ThemePreset.preahVihear:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ប្រាសាទព្រះវិហារ (Preah Vihear Cliff)",
+          name: "🏔️ ខេត្តព្រះវិហារ (Preah Vihear - Mountain Cliff Temple)",
           bgColor: Color(0xFF131924),
           cardColor: Color(0xFF212C3D),
           textColor: Color(0xFFE0FBFC),
@@ -267,45 +214,197 @@ class _ClockViewState extends State<ClockView> {
           borderColor: Color(0xFFE0FBFC),
           shadows: [Shadow(color: Color(0xFFE0FBFC), blurRadius: 20)],
         );
-      case ThemePreset.khmerSbekThom:
+
+      // 10. Kampong Chhnang
+      case ThemePreset.kampongChhnang:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ស្បែកធំ (Sbek Thom Shadow Puppet)",
-          bgColor: Color(0xFF121212),
-          cardColor: Color(0xFF212121),
+          name: "🏺 ខេត្តកំពង់ឆ្នាំង (Kampong Chhnang - Khmer Pottery)",
+          bgColor: Color(0xFF2A150D),
+          cardColor: Color(0xFF452417),
+          textColor: Color(0xFFC2410C),
+          accentColor: Color(0xFF38BDF8),
+          borderColor: Color(0xFFC2410C),
+          shadows: [Shadow(color: Color(0xFFC2410C), blurRadius: 20)],
+        );
+
+      // 11. Kampong Speu
+      case ThemePreset.kampongSpeu:
+        return const ClockStyleData(
+          name: "🌴 ខេត្តកំពង់ស្ពឺ (Kampong Speu - Palm Sugar Gold)",
+          bgColor: Color(0xFF1C1300),
+          cardColor: Color(0xFF332400),
+          textColor: Color(0xFFD97706),
+          accentColor: Color(0xFF15803D),
+          borderColor: Color(0xFFD97706),
+          shadows: [Shadow(color: Color(0xFFD97706), blurRadius: 20)],
+        );
+
+      // 12. Kampong Thom
+      case ThemePreset.kampongThom:
+        return const ClockStyleData(
+          name: "🐟 ខេត្តកំពង់ធំ (Kampong Thom - Sambor Prei Kuk)",
+          bgColor: Color(0xFF260D0D),
+          cardColor: Color(0xFF421A1A),
+          textColor: Color(0xFFF87171),
+          accentColor: Color(0xFF9CA3AF),
+          borderColor: Color(0xFFF87171),
+          shadows: [],
+        );
+
+      // 13. Kampong Cham
+      case ThemePreset.kampongCham:
+        return const ClockStyleData(
+          name: "🛥️ ខេត្តកំពង់ចាម (Kampong Cham - Bamboo Bridge)",
+          bgColor: Color(0xFF0C1929),
+          cardColor: Color(0xFF172B46),
+          textColor: Color(0xFFEAB308),
+          accentColor: Color(0xFF38BDF8),
+          borderColor: Color(0xFFEAB308),
+          shadows: [Shadow(color: Color(0xFFEAB308), blurRadius: 20)],
+        );
+
+      // 14. Kratie
+      case ThemePreset.kratie:
+        return const ClockStyleData(
+          name: "🎋 ខេត្តក្រចេះ (Kratie - Irrawaddy Dolphin Sunset)",
+          bgColor: Color(0xFF21140E),
+          cardColor: Color(0xFF3D251A),
           textColor: Color(0xFFF97316),
-          accentColor: Color(0xFFFB923C),
+          accentColor: Color(0xFF94A3B8),
           borderColor: Color(0xFFF97316),
-          shadows: [Shadow(color: Color(0xFFF97316), blurRadius: 25)],
+          shadows: [Shadow(color: Color(0xFFF97316), blurRadius: 20)],
         );
-      case ThemePreset.khmerGoldenStupa:
+
+      // 15. Stung Treng
+      case ThemePreset.stungTreng:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ចេតិយមាស (Golden Stupa)",
-          bgColor: Color(0xFF0D1117),
-          cardColor: Color(0xFF161B22),
-          textColor: Color(0xFFE5A93C),
-          accentColor: Color(0xFFF3D280),
-          borderColor: Color(0xFFE5A93C),
-          shadows: [Shadow(color: Color(0xFFE5A93C), blurRadius: 20)],
+          name: "🌿 ខេត្តស្ទឹងត្រែង (Stung Treng - Sekong River)",
+          bgColor: Color(0xFF091F1C),
+          cardColor: Color(0xFF133833),
+          textColor: Color(0xFF047857),
+          accentColor: Color(0xFF22D3EE),
+          borderColor: Color(0xFF22D3EE),
+          shadows: [Shadow(color: Color(0xFF22D3EE), blurRadius: 20)],
         );
-      case ThemePreset.khmerRiceField:
+
+      // 16. Prey Veng
+      case ThemePreset.preyVeng:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍ស្រូវវស្សាខ្មែរ (Golden Rice Field)",
-          bgColor: Color(0xFF1C1914),
-          cardColor: Color(0xFF332D24),
-          textColor: Color(0xFFE9C46A),
-          accentColor: Color(0xFF2A9D8F),
-          borderColor: Color(0xFFE9C46A),
-          shadows: [Shadow(color: Color(0xFFE9C46A), blurRadius: 20)],
+          name: "🌾 ខេត្តព្រៃវែង (Prey Veng - Fertile Paddy Fields)",
+          bgColor: Color(0xFF0D2214),
+          cardColor: Color(0xFF193B24),
+          textColor: Color(0xFFFACC15),
+          accentColor: Color(0xFF4ADE80),
+          borderColor: Color(0xFFFACC15),
+          shadows: [Shadow(color: Color(0xFFFACC15), blurRadius: 20)],
         );
-      case ThemePreset.khmerPhnomPenhNight:
+
+      // 17. Svay Rieng
+      case ThemePreset.svayRieng:
         return const ClockStyleData(
-          name: "🇰🇭 ស្ទាយ៍រាត្រីភ្នំពេញ (Phnom Penh Night Glow)",
-          bgColor: Color(0xFF090A0F),
-          cardColor: Color(0xFF121524),
-          textColor: Color(0xFF00F3FF),
-          accentColor: Color(0xFFD62828),
-          borderColor: Color(0xFF00F3FF),
-          shadows: [Shadow(color: Color(0xFF00F3FF), blurRadius: 30)],
+          name: "🚣 ខេត្តស្វាយរៀង (Svay Rieng - Lotus Ponds)",
+          bgColor: Color(0xFF24101B),
+          cardColor: Color(0xFF3B1B2D),
+          textColor: Color(0xFFEC4899),
+          accentColor: Color(0xFF10B981),
+          borderColor: Color(0xFFEC4899),
+          shadows: [Shadow(color: Color(0xFFEC4899), blurRadius: 20)],
+        );
+
+      // 18. Takeo
+      case ThemePreset.takeo:
+        return const ClockStyleData(
+          name: "🏺 ខេត្តតាកែវ (Takeo - Phnom Chisor Ancient Cradle)",
+          bgColor: Color(0xFF1C140D),
+          cardColor: Color(0xFF332317),
+          textColor: Color(0xFFB45309),
+          accentColor: Color(0xFFFBBF24),
+          borderColor: Color(0xFFB45309),
+          shadows: [],
+        );
+
+      // 19. Pursat
+      case ThemePreset.pursat:
+        return const ClockStyleData(
+          name: "⛰️ ខេត្តពោធិ៍សាត់ (Pursat - Cardamom Mountains)",
+          bgColor: Color(0xFF0A1F1B),
+          cardColor: Color(0xFF173630),
+          textColor: Color(0xFFF1F5F9),
+          accentColor: Color(0xFF10B981),
+          borderColor: Color(0xFFF1F5F9),
+          shadows: [Shadow(color: Color(0xFFF1F5F9), blurRadius: 15)],
+        );
+
+      // 20. Banteay Meanchey
+      case ThemePreset.banteayMeanchey:
+        return const ClockStyleData(
+          name: "🌾 ខេត្តបន្ទាយមានជ័យ (Banteay Meanchey)",
+          bgColor: Color(0xFF1C1B14),
+          cardColor: Color(0xFF333124),
+          textColor: Color(0xFFEAB308),
+          accentColor: Color(0xFF9CA3AF),
+          borderColor: Color(0xFFEAB308),
+          shadows: [Shadow(color: Color(0xFFEAB308), blurRadius: 20)],
+        );
+
+      // 21. Oddar Meanchey
+      case ThemePreset.oddarMeanchey:
+        return const ClockStyleData(
+          name: "🍃 ខេត្តឧត្តរមានជ័យ (Oddar Meanchey - Dangrek Range)",
+          bgColor: Color(0xFF0F1F17),
+          cardColor: Color(0xFF1D382B),
+          textColor: Color(0xFF67E8F9),
+          accentColor: Color(0xFF4ADE80),
+          borderColor: Color(0xFF67E8F9),
+          shadows: [Shadow(color: Color(0xFF67E8F9), blurRadius: 20)],
+        );
+
+      // 22. Pailin
+      case ThemePreset.pailin:
+        return const ClockStyleData(
+          name: "🌳 ខេត្តប៉ៃលិន (Pailin - Sapphire & Ruby Gems)",
+          bgColor: Color(0xFF0C1426),
+          cardColor: Color(0xFF182643),
+          textColor: Color(0xFF3B82F6),
+          accentColor: Color(0xFFEF4444),
+          borderColor: Color(0xFF3B82F6),
+          shadows: [Shadow(color: Color(0xFF3B82F6), blurRadius: 25)],
+        );
+
+      // 23. Koh Kong
+      case ThemePreset.kohKong:
+        return const ClockStyleData(
+          name: "🌄 ខេត្តកោះកុង (Koh Kong - Mangrove & Estuary)",
+          bgColor: Color(0xFF051D1A),
+          cardColor: Color(0xFF0F3631),
+          textColor: Color(0xFF22D3EE),
+          accentColor: Color(0xFF34D399),
+          borderColor: Color(0xFF22D3EE),
+          shadows: [Shadow(color: Color(0xFF22D3EE), blurRadius: 20)],
+        );
+
+      // 24. Tboung Khmum
+      case ThemePreset.tboungKhmum:
+        return const ClockStyleData(
+          name: "🌾 ខេត្តត្បូងឃ្មុំ (Tboung Khmum - Rubber Plantation)",
+          bgColor: Color(0xFF0C1F17),
+          cardColor: Color(0xFF17382B),
+          textColor: Color(0xFF059669),
+          accentColor: Color(0xFFF8FAFC),
+          borderColor: Color(0xFF059669),
+          shadows: [Shadow(color: Color(0xFF059669), blurRadius: 20)],
+        );
+
+      // 25. Kandal
+      case ThemePreset.kandal:
+        return const ClockStyleData(
+          name: "🏛️ ខេត្តកណ្តាល (Kandal - Koh Dach Silk Island)",
+          bgColor: Color(0xFF220D21),
+          cardColor: Color(0xFF3D1A3B),
+          textColor: Color(0xFFC026D3),
+          accentColor: Color(0xFFF59E0B),
+          borderColor: Color(0xFFC026D3),
+          shadows: [Shadow(color: Color(0xFFC026D3), blurRadius: 25)],
         );
     }
   }
@@ -326,13 +425,11 @@ class _ClockViewState extends State<ClockView> {
     final minutes = _toKhmerDigits(rawMinutes);
     final seconds = _toKhmerDigits(rawSeconds);
 
-    // Khmer Date formatting
     final khmerDay = _khmerDays[_now.weekday - 1];
     final khmerMonth = _khmerMonths[_now.month - 1];
     final khmerYear = _toKhmerDigits(_now.year.toString());
     final khmerDateStr = "$khmerDay, ទី${_toKhmerDigits(_now.day.toString())} ខែ$khmerMonth ឆ្នាំ$khmerYear";
 
-    // Daily Khmer Proverb
     final proverbIndex = _now.day % _khmerProverbs.length;
     final dailyProverb = _khmerProverbs[proverbIndex];
 
@@ -353,7 +450,7 @@ class _ClockViewState extends State<ClockView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Khmer Theme Name Badge
+                // Province Theme Name Badge
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   margin: const EdgeInsets.only(bottom: 24),
@@ -369,7 +466,7 @@ class _ClockViewState extends State<ClockView> {
                 ),
 
                 if (!isPortrait) ...[
-                  // Landscape Layout (Khmer Digits)
+                  // Landscape Layout
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
