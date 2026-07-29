@@ -36,6 +36,14 @@ class _ClockViewState extends State<ClockView> {
   int _shiftX = 0;
   int _shiftY = 0;
 
+  static const List<String> _khmerDays = [
+    'ថ្ងៃច័ន្ទ', 'ថ្ងៃអង្គារ', 'ថ្ងៃពុធ', 'ថ្ងៃព្រហស្បតិ៍', 'ថ្ងៃសុក្រ', 'ថ្ងៃសៅរ៍', 'ថ្ងៃអាទិត្យ'
+  ];
+
+  static const List<String> _khmerMonths = [
+    'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -64,8 +72,40 @@ class _ClockViewState extends State<ClockView> {
     super.dispose();
   }
 
+  String _toKhmerDigits(String input) {
+    const arabic = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const khmer = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+    String result = input;
+    for (int i = 0; i < arabic.length; i++) {
+      result = result.replaceAll(arabic[i], khmer[i]);
+    }
+    return result;
+  }
+
   ClockStyleData _getStyleData(ThemePreset preset) {
     switch (preset) {
+      // Khmer Cultural Themes
+      case ThemePreset.khmerAngkor:
+        return const ClockStyleData(
+          name: "🇰🇭 ស្ទាយ៍អង្គរមាស (Khmer Angkor Gold)",
+          bgColor: Color(0xFF0B132B),
+          cardColor: Color(0xFF1C2541),
+          textColor: Color(0xFFFFD700),
+          accentColor: Color(0xFFE5C158),
+          borderColor: Color(0xFFFFD700),
+          shadows: [Shadow(color: Color(0xFFFFD700), blurRadius: 25)],
+        );
+      case ThemePreset.khmerKbach:
+        return const ClockStyleData(
+          name: "🇰🇭 ស្ទាយ៍ក្បាច់បុរាណ (Khmer Kbach Silk)",
+          bgColor: Color(0xFF3D0007),
+          cardColor: Color(0xFF5E000C),
+          textColor: Color(0xFFFBE8A6),
+          accentColor: Color(0xFFD4AF37),
+          borderColor: Color(0xFFD4AF37),
+          shadows: [Shadow(color: Color(0xFFD4AF37), blurRadius: 20)],
+        );
+
       // Original 5 Themes
       case ThemePreset.nordic:
         return const ClockStyleData(
@@ -327,12 +367,22 @@ class _ClockViewState extends State<ClockView> {
     final settings = Provider.of<ClockSettings>(context);
     final style = _getStyleData(settings.themePreset);
 
-    final hours = settings.timeFormat == TimeFormat.h12 
+    String rawHours = settings.timeFormat == TimeFormat.h12 
         ? (_now.hour % 12 == 0 ? 12 : _now.hour % 12).toString().padLeft(2, '0')
         : _now.hour.toString().padLeft(2, '0');
-    final minutes = _now.minute.toString().padLeft(2, '0');
-    final seconds = _now.second.toString().padLeft(2, '0');
-    final amPm = settings.timeFormat == TimeFormat.h12 ? (_now.hour >= 12 ? 'PM' : 'AM') : '';
+    String rawMinutes = _now.minute.toString().padLeft(2, '0');
+    String rawSeconds = _now.second.toString().padLeft(2, '0');
+    String amPm = settings.timeFormat == TimeFormat.h12 ? (_now.hour >= 12 ? 'PM' : 'AM') : '';
+
+    final hours = settings.useKhmerDigits ? _toKhmerDigits(rawHours) : rawHours;
+    final minutes = settings.useKhmerDigits ? _toKhmerDigits(rawMinutes) : rawMinutes;
+    final seconds = settings.useKhmerDigits ? _toKhmerDigits(rawSeconds) : rawSeconds;
+
+    // Date formatting (Khmer vs English)
+    final khmerDay = _khmerDays[_now.weekday - 1];
+    final khmerMonth = _khmerMonths[_now.month - 1];
+    final khmerYear = _toKhmerDigits(_now.year.toString());
+    final khmerDateStr = "$khmerDay, ទី${_toKhmerDigits(_now.day.toString())} ខែ$khmerMonth ឆ្នាំ$khmerYear";
 
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait || settings.orientationMode == OrientationMode.vertical;
 
@@ -365,7 +415,7 @@ class _ClockViewState extends State<ClockView> {
                   ),
                   child: Text(
                     style.name,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: style.textColor, letterSpacing: 1.2),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: style.textColor, letterSpacing: 1.1),
                   ),
                 ),
 
@@ -415,6 +465,15 @@ class _ClockViewState extends State<ClockView> {
                   Text(
                     minutes,
                     style: TextStyle(fontSize: 130, fontWeight: FontWeight.w900, color: style.textColor, shadows: style.shadows),
+                  ),
+                ],
+
+                // Date Display (Khmer Date / Standard Date)
+                if (settings.showDate) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    settings.useKhmerDigits ? khmerDateStr : "WED, JUL 30, 2026",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: style.textColor.withOpacity(0.8), letterSpacing: 1.1),
                   ),
                 ],
               ],

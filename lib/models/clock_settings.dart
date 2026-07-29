@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum ThemePreset {
+  // Khmer Cultural Themes
+  khmerAngkor, khmerKbach,
+
   // Original 5 Themes
   nordic, cyberpunk, flip, oled, glass,
   
@@ -18,7 +21,7 @@ enum DisplayTarget { secondary, primary }
 enum TimeFormat { h12, h24 }
 
 class ClockSettings extends ChangeNotifier {
-  ThemePreset _themePreset = ThemePreset.nordic;
+  ThemePreset _themePreset = ThemePreset.khmerAngkor;
   DisplayMode _displayMode = DisplayMode.fullscreen;
   OrientationMode _orientationMode = OrientationMode.auto;
   DisplayTarget _displayTarget = DisplayTarget.secondary;
@@ -26,11 +29,12 @@ class ClockSettings extends ChangeNotifier {
 
   bool _showSeconds = true;
   bool _showDate = true;
+  bool _useKhmerDigits = true; // Support Khmer Digits (០, ១, ២, ៣...)
   bool _oledPixelShift = true;
   bool _preventDisplaySleep = true;
   bool _alwaysOnTop = true;
   double _glassOpacity = 0.65;
-  String _fontFamily = 'Outfit';
+  String _fontFamily = 'Kantumruy Pro';
 
   ThemePreset get themePreset => _themePreset;
   DisplayMode get displayMode => _displayMode;
@@ -39,6 +43,7 @@ class ClockSettings extends ChangeNotifier {
   TimeFormat get timeFormat => _timeFormat;
   bool get showSeconds => _showSeconds;
   bool get showDate => _showDate;
+  bool get useKhmerDigits => _useKhmerDigits;
   bool get oledPixelShift => _oledPixelShift;
   bool get preventDisplaySleep => _preventDisplaySleep;
   bool get alwaysOnTop => _alwaysOnTop;
@@ -53,15 +58,19 @@ class ClockSettings extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _showSeconds = prefs.getBool('showSeconds') ?? true;
     _showDate = prefs.getBool('showDate') ?? true;
+    _useKhmerDigits = prefs.getBool('useKhmerDigits') ?? true;
     _oledPixelShift = prefs.getBool('oledPixelShift') ?? true;
     _preventDisplaySleep = prefs.getBool('preventDisplaySleep') ?? true;
     _alwaysOnTop = prefs.getBool('alwaysOnTop') ?? true;
-    _fontFamily = prefs.getString('fontFamily') ?? 'Outfit';
+    _fontFamily = prefs.getString('fontFamily') ?? 'Kantumruy Pro';
     notifyListeners();
   }
 
   void setTheme(ThemePreset preset) {
     _themePreset = preset;
+    if (preset == ThemePreset.khmerAngkor || preset == ThemePreset.khmerKbach) {
+      _useKhmerDigits = true;
+    }
     notifyListeners();
   }
 
@@ -82,6 +91,11 @@ class ClockSettings extends ChangeNotifier {
 
   void toggleShowSeconds(bool val) {
     _showSeconds = val;
+    notifyListeners();
+  }
+
+  void toggleKhmerDigits(bool val) {
+    _useKhmerDigits = val;
     notifyListeners();
   }
 
