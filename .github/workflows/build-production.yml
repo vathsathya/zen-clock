@@ -103,10 +103,11 @@ jobs:
       - name: Compress Windows Portable ZIP
         run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath zen-clock-windows-x64.zip -CompressionLevel Fastest
 
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
       - name: Build Windows Setup .exe Installer (Inno Setup)
-        uses: sayyid5416/innosetup-action@v1
-        with:
-          filepath: windows/installer/zen_clock_setup.iss
+        run: iscc windows/installer/zen_clock_setup.iss
 
       - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
@@ -163,9 +164,36 @@ jobs:
           name: zen-clock-android-apk
           path: zen-clock-*.apk
 
+  build-web:
+    name: Build Web Production PWA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Web Release
+        run: |
+          flutter build web --release
+          tar -czvf zen-clock-web.tar.gz -C build/web .
+
+      - name: Upload Web Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zen-clock-web-package
+          path: zen-clock-web.tar.gz
+
   release:
     name: Create GitHub Release
-    needs: [build-linux, build-windows, build-android]
+    needs: [build-linux, build-windows, build-android, build-web]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -183,3 +211,4 @@ jobs:
             zen-clock-windows-packages/zen-clock-windows-x64.zip
             zen-clock-windows-packages/ZenClock-Setup-*.exe
             zen-clock-android-apk/zen-clock-*.apk
+            zen-clock-web-package/zen-clock-web.tar.gz
