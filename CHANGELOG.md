@@ -11,6 +11,7 @@ All notable changes to the **Zen Digital Clock** project are documented in this 
   - **Visual & Particle Effects Suite**: Shooting Stars / Meteor Streaks, Deep Cosmic Nebula Atmosphere, 90 Twinkling Stars, 3D Glass Droplets, Splash Ripples, and Atmospheric Ambient Lightning Flashes.
   - **Performance Optimization & Memory Leak Prevention**: Pre-computed `Float32List` particle math lookup tables (93% CPU speedup), static cached `Paint` instances, and leak-safe `TrayService` cleanup.
   - **Bilingual Live Wallpaper Options**: Streamlined wallpaper selection menu with clean Khmer & English labels.
+  - **CI/CD Workflow & Linux Packaging Fix**: Resolved GitHub Actions Linux build failure by adding `libgstreamer1.0-dev` and `libgstreamer-plugins-base1.0-dev` APT dependencies to `.github/workflows/build-production.yml`, and added runtime GStreamer libraries to `packaging/linux/build_deb.sh`.
 
 ---
 

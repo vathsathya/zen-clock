@@ -52,7 +52,7 @@ Architecture: ${ARCH}
 Maintainer: Vath Sathya <vath.sathya@gmail.com>
 Section: utils
 Priority: optional
-Depends: libgtk-3-0, libglib2.0-0, libayatana-appindicator3-1
+Depends: libgtk-3-0, libglib2.0-0, libayatana-appindicator3-1, libgstreamer1.0-0, libgstreamer-plugins-base1.0-0
 Description: Ultra-Lightweight Zen Digital Clock with 100% Khmer Culture & Weather Forecast
  Ultra-lightweight AMOLED digital clock with 25 Cambodian province themes,
  5-day weather forecast, Khmer lunar calendar, and customizable focus timer.
