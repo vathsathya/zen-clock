@@ -241,6 +241,23 @@ class WeatherService {
       }
     } catch (_) {}
 
+    List<WeatherDailyItem> fallbackItems = [];
+    final now = DateTime.now();
+    for (int i = 0; i < 5; i++) {
+      final dt = now.add(Duration(days: i));
+      final dateStr = dt.toString().substring(0, 10);
+      final (icon, nameKhmer, nameEnglish) = _getConditionDetails(i % 2 == 0 ? 60 : 95);
+      fallbackItems.add(WeatherDailyItem(
+        dateStr: dateStr,
+        tempMax: 32.0 + (i % 2),
+        tempMin: 24.0 + (i % 2),
+        conditionIcon: icon,
+        conditionNameKhmer: nameKhmer,
+        conditionNameEnglish: nameEnglish,
+        isToday: i == 0,
+      ));
+    }
+
     return WeatherInfo(
       temperature: 31.0,
       tempMax: 33.0,
@@ -249,12 +266,51 @@ class WeatherService {
       rainProbability: 15,
       sunrise: "05:50",
       sunset: "18:20",
-      conditionIcon: "☀️",
-      conditionNameKhmer: "មេឃស្រឡះ",
-      conditionNameEnglish: "Sunny",
+      conditionIcon: "🌧️",
+      conditionNameKhmer: "ភ្លៀងធ្លាក់",
+      conditionNameEnglish: "Rainy",
       locationNameKhmer: locationKhmer,
       locationNameEnglish: locationEnglish,
-      dailyItems: [],
+      dailyItems: fallbackItems,
+    );
+  }
+
+  static WeatherInfo getFallbackWeather(ThemePreset preset) {
+    final loc = provinceLocations[preset] ?? const ProvinceLocation("រាជធានីភ្នំពេញ", "Phnom Penh Capital", 11.5564, 104.9282);
+    final locationKhmer = loc.nameKhmer;
+    final locationEnglish = loc.nameEnglish;
+
+    List<WeatherDailyItem> fallbackItems = [];
+    final now = DateTime.now();
+    for (int i = 0; i < 5; i++) {
+      final dt = now.add(Duration(days: i));
+      final dateStr = dt.toString().substring(0, 10);
+      final (icon, nameKhmer, nameEnglish) = _getConditionDetails(i % 2 == 0 ? 60 : 95);
+      fallbackItems.add(WeatherDailyItem(
+        dateStr: dateStr,
+        tempMax: 32.0 + (i % 2),
+        tempMin: 24.0 + (i % 2),
+        conditionIcon: icon,
+        conditionNameKhmer: nameKhmer,
+        conditionNameEnglish: nameEnglish,
+        isToday: i == 0,
+      ));
+    }
+
+    return WeatherInfo(
+      temperature: 31.0,
+      tempMax: 33.0,
+      tempMin: 25.0,
+      uvIndex: 7,
+      rainProbability: 15,
+      sunrise: "05:50",
+      sunset: "18:20",
+      conditionIcon: "🌧️",
+      conditionNameKhmer: "ភ្លៀងធ្លាក់",
+      conditionNameEnglish: "Rainy",
+      locationNameKhmer: locationKhmer,
+      locationNameEnglish: locationEnglish,
+      dailyItems: fallbackItems,
     );
   }
 }

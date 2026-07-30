@@ -81,13 +81,13 @@ class WeatherForecastDialog extends StatelessWidget {
                 ),
               ],
             ),
-            Divider(color: textColor.withOpacity(0.2), height: 24),
+            Divider(color: textColor.withValues(alpha: 0.2), height: 24),
 
             // Today Insights Banner
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: textColor.withOpacity(0.08),
+                color: textColor.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -133,7 +133,7 @@ class WeatherForecastDialog extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: textColor.withOpacity(0.9),
+                      color: textColor.withValues(alpha: 0.9),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -147,7 +147,7 @@ class WeatherForecastDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: textColor.withOpacity(0.9),
+                color: textColor.withValues(alpha: 0.9),
               ),
             ),
             const SizedBox(height: 10),
@@ -157,7 +157,7 @@ class WeatherForecastDialog extends StatelessWidget {
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
                 itemCount: weather.dailyItems.length,
-                separatorBuilder: (context, index) => Divider(color: textColor.withOpacity(0.1), height: 1),
+                separatorBuilder: (context, index) => Divider(color: textColor.withValues(alpha: 0.1), height: 1),
                 itemBuilder: (context, index) {
                   final item = weather.dailyItems[index];
                   final dateDisplay = isKhmer ? _toKhmerDigits(item.dateStr) : item.dateStr;
@@ -168,7 +168,7 @@ class WeatherForecastDialog extends StatelessWidget {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     decoration: BoxDecoration(
-                      color: item.isToday ? textColor.withOpacity(0.18) : Colors.transparent,
+                      color: item.isToday ? textColor.withValues(alpha: 0.18) : Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -208,7 +208,7 @@ class WeatherForecastDialog extends StatelessWidget {
                               item.getConditionName(isKhmer),
                               style: TextStyle(
                                 fontSize: 13,
-                                color: textColor.withOpacity(0.8),
+                                color: textColor.withValues(alpha: 0.8),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -251,7 +251,7 @@ class WeatherForecastDialog extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 11,
-                color: textColor.withOpacity(0.7),
+                color: textColor.withValues(alpha: 0.7),
               ),
             ),
             Text(

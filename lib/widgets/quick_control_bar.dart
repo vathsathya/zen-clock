@@ -10,6 +10,7 @@ class QuickControlBar extends StatelessWidget {
   final VoidCallback onOpenSettings;
   final VoidCallback onToggleDigits;
   final VoidCallback onToggleFullscreen;
+  final VoidCallback? onExitApp;
   final VoidCallback? onJumpToToday;
   final bool isFocusTimerActive;
 
@@ -23,6 +24,7 @@ class QuickControlBar extends StatelessWidget {
     required this.onOpenSettings,
     required this.onToggleDigits,
     required this.onToggleFullscreen,
+    this.onExitApp,
     this.onJumpToToday,
     this.isFocusTimerActive = false,
   });
@@ -33,10 +35,8 @@ class QuickControlBar extends StatelessWidget {
     final isCalendar = settings.displayMode == DisplayMode.calendar;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: Colors.transparent,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -114,6 +114,19 @@ class QuickControlBar extends StatelessWidget {
             activeColor: primaryColor,
             onPressed: onOpenSettings,
           ),
+
+          if (onExitApp != null) ...[
+            const SizedBox(width: 8),
+            // 7. Top-Right Red Accent Exit Button
+            _ControlButton(
+              icon: Icons.power_settings_new_rounded,
+              label: isKhmer ? 'ចាកចេញ' : 'Exit',
+              tooltip: isKhmer ? 'ចាកចេញពីកម្មវិធី' : 'Exit Application',
+              isActive: true,
+              activeColor: Colors.redAccent,
+              onPressed: onExitApp!,
+            ),
+          ],
         ],
       ),
     );
@@ -160,13 +173,8 @@ class _ControlButtonState extends State<_ControlButton> {
             onTap: widget.onPressed,
             borderRadius: BorderRadius.circular(16),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: widget.isActive
-                    ? widget.activeColor.withOpacity(0.18)
-                    : (_isHovered ? Colors.white.withOpacity(0.10) : Colors.transparent),
-                borderRadius: BorderRadius.circular(16),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              color: Colors.transparent,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

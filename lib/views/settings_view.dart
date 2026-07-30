@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/clock_settings.dart';
 import '../services/weather_service.dart';
 import '../services/font_service.dart';
+import '../services/zen_audio_service.dart';
 import 'weather_forecast_dialog.dart';
 
 class SettingsDialog extends StatelessWidget {
@@ -84,7 +85,7 @@ class SettingsDialog extends StatelessWidget {
     final isKhmer = settings.useKhmerDigits;
 
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Dialog(
         backgroundColor: const Color(0xFF111111),
         shape: RoundedRectangleBorder(
@@ -92,8 +93,8 @@ class SettingsDialog extends StatelessWidget {
           side: const BorderSide(color: Color(0xFF1F1F1F), width: 1.0),
         ),
         child: Container(
-          width: 580,
-          height: 640,
+          width: 620,
+          height: 660,
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
@@ -130,24 +131,26 @@ class SettingsDialog extends StatelessWidget {
               // TabBar Navigation Navigation Header
               Container(
                 decoration: BoxDecoration(
-                  color: textColor.withOpacity(0.06),
+                  color: textColor.withValues(alpha:0.06),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: TabBar(
                   indicator: BoxDecoration(
-                    color: textColor.withOpacity(0.18),
+                    color: textColor.withValues(alpha:0.18),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
+                  isScrollable: true,
                   labelColor: textColor,
-                  unselectedLabelColor: textColor.withOpacity(0.55),
-                  labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                  unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                  unselectedLabelColor: textColor.withValues(alpha:0.55),
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5),
+                  unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12.5),
                   padding: const EdgeInsets.all(4),
                   tabs: [
                     Tab(text: isKhmer ? '🎨 ផ្ទៃអេក្រង់' : '🎨 Appearance'),
                     Tab(text: isKhmer ? '👁️ ការបង្ហាញ' : '👁️ Display'),
+                    Tab(text: isKhmer ? '🧘 ម៉ោង & សំឡេង' : '🧘 Focus & Audio'),
                     Tab(text: isKhmer ? '⚙️ ប្រព័ន្ធ' : '⚙️ System'),
                     Tab(text: isKhmer ? '👨‍💻 អំពី' : '👨‍💻 About'),
                   ],
@@ -194,7 +197,7 @@ class SettingsDialog extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
-                            color: textColor.withOpacity(0.08),
+                            color: textColor.withValues(alpha:0.08),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: DropdownButtonHideUnderline(
@@ -232,7 +235,7 @@ class SettingsDialog extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
-                            color: textColor.withOpacity(0.08),
+                            color: textColor.withValues(alpha:0.08),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: DropdownButtonHideUnderline(
@@ -320,24 +323,34 @@ class SettingsDialog extends StatelessWidget {
                           runSpacing: 8,
                           children: [
                             _buildChoiceChip(
-                              label: isKhmer ? '🚫 បិទ (AMOLED)' : '🚫 Off (AMOLED)',
+                              label: '🚫 បិទ · Off (AMOLED)',
                               selected: settings.liveWallpaperMode == LiveWallpaperMode.off,
                               onSelected: () => settings.setLiveWallpaperMode(LiveWallpaperMode.off),
                             ),
                             _buildChoiceChip(
-                              label: isKhmer ? '✨ ពន្លឺអូរ៉ា' : '✨ Aura Pulse',
+                              label: '✨ ពន្លឺអូរ៉ា · Aura Pulse',
                               selected: settings.liveWallpaperMode == LiveWallpaperMode.auraPulse,
                               onSelected: () => settings.setLiveWallpaperMode(LiveWallpaperMode.auraPulse),
                             ),
                             _buildChoiceChip(
-                              label: isKhmer ? '🌌 ផ្កាយអវកាស' : '🌌 Cosmic Stars',
+                              label: '🌌 ផ្កាយអវកាស · Cosmic Stars',
                               selected: settings.liveWallpaperMode == LiveWallpaperMode.cosmicStars,
                               onSelected: () => settings.setLiveWallpaperMode(LiveWallpaperMode.cosmicStars),
                             ),
                             _buildChoiceChip(
-                              label: isKhmer ? '🌧️ ទឹកភ្លៀង Zen' : '🌧️ Gentle Rain',
+                              label: '🌧️ ទឹកភ្លៀង Zen · Gentle Rain',
                               selected: settings.liveWallpaperMode == LiveWallpaperMode.gentleRain,
                               onSelected: () => settings.setLiveWallpaperMode(LiveWallpaperMode.gentleRain),
+                            ),
+                            _buildChoiceChip(
+                              label: '🏛️ រូបភាពតាមខេត្ត · Province Wallpaper',
+                              selected: settings.liveWallpaperMode == LiveWallpaperMode.provinceTheme,
+                              onSelected: () => settings.setLiveWallpaperMode(LiveWallpaperMode.provinceTheme),
+                            ),
+                            _buildChoiceChip(
+                              label: '🎥 វីដេអូរន្ទះ HD · HD Video Thunderstorm',
+                              selected: settings.liveWallpaperMode == LiveWallpaperMode.videoThunderstorm,
+                              onSelected: () => settings.setLiveWallpaperMode(LiveWallpaperMode.videoThunderstorm),
                             ),
                           ],
                         ),
@@ -406,14 +419,154 @@ class SettingsDialog extends StatelessWidget {
                           ),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            side: BorderSide(color: textColor.withOpacity(0.3)),
+                            side: BorderSide(color: textColor.withValues(alpha:0.3)),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                       ],
                     ),
 
-                    // Tab 3: ⚙️ System (ប្រព័ន្ធ)
+                    // Tab 3: 🧘 Focus & Audio (ម៉ោងផ្ដោត & សំឡេង)
+                    ListView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        _buildSectionTitle(isKhmer ? '🔊 ការកំណត់សំឡេង (Sound & Audio)' : '🔊 Audio Settings'),
+                        const SizedBox(height: 8),
+                        _buildSwitchTile(
+                          title: isKhmer ? 'បើកសំឡេងរ៉ក/Alerts (Sound Effects)' : 'Enable Sound Effects',
+                          value: settings.enableSoundEffects,
+                          onChanged: (val) => settings.toggleSoundEffects(val),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Text(
+                              isKhmer ? 'កម្រិតសំឡេង (Volume)' : 'Master Volume',
+                              style: TextStyle(fontSize: 14, color: textColor.withValues(alpha:0.9)),
+                            ),
+                            Expanded(
+                              child: Slider(
+                                value: settings.masterVolume,
+                                activeColor: textColor,
+                                inactiveColor: textColor.withValues(alpha:0.2),
+                                onChanged: (val) {
+                                  settings.setMasterVolume(val);
+                                  ZenAudioService.instance.setVolume(val);
+                                },
+                              ),
+                            ),
+                            Text(
+                              '${(settings.masterVolume * 100).round()}%',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: textColor),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 20),
+                        _buildSectionTitle(isKhmer ? '🎵 ភ្លេងជំនួយការផ្ដោតអារម្មណ៍ (Zen Ambient Sound)' : '🎵 Zen Ambient Soundscapes'),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: textColor.withValues(alpha:0.08),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<ZenAmbientSound>(
+                              value: ZenAudioService.instance.currentAmbient,
+                              isExpanded: true,
+                              dropdownColor: bgColor,
+                              icon: Icon(Icons.music_note_rounded, color: textColor),
+                              items: [
+                                DropdownMenuItem(
+                                  value: ZenAmbientSound.off,
+                                  child: Text(isKhmer ? '🚫 បិទសំឡេង (Off)' : '🚫 Soundscape Off', style: TextStyle(color: textColor)),
+                                ),
+                                DropdownMenuItem(
+                                  value: ZenAmbientSound.gentleRain,
+                                  child: Text(isKhmer ? '🌧️ ទឹកភ្លៀងរំភើយ (Gentle Rain)' : '🌧️ Gentle Rain', style: TextStyle(color: textColor)),
+                                ),
+                                DropdownMenuItem(
+                                  value: ZenAmbientSound.softWind,
+                                  child: Text(isKhmer ? '🍃 ខ្យល់បក់ត្រជាក់ (Soft Wind)' : '🍃 Soft Wind', style: TextStyle(color: textColor)),
+                                ),
+                                DropdownMenuItem(
+                                  value: ZenAmbientSound.oceanWaves,
+                                  child: Text(isKhmer ? '🌊 រលកសមុទ្រ (Ocean Waves)' : '🌊 Ocean Waves', style: TextStyle(color: textColor)),
+                                ),
+                                DropdownMenuItem(
+                                  value: ZenAmbientSound.forestStream,
+                                  child: Text(isKhmer ? '🏞️ ទឹកអូរព្រៃភ្នំ (Forest Stream)' : '🏞️ Forest Stream', style: TextStyle(color: textColor)),
+                                ),
+                              ],
+                              onChanged: (newSound) {
+                                if (newSound != null) {
+                                  ZenAudioService.instance.playAmbient(newSound);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+                        _buildSectionTitle(isKhmer ? '⏱️ រយៈពេលម៉ោងផ្ដោតអារម្មណ៍ (Focus Timer Durations)' : '⏱️ Focus Timer Durations'),
+                        const SizedBox(height: 10),
+                        Text(
+                          isKhmer ? 'រយៈពេលផ្ដោតអារម្មណ៍ (Focus Duration):' : 'Work Focus Duration:',
+                          style: TextStyle(fontSize: 13, color: textColor.withValues(alpha:0.8)),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [15, 20, 25, 30, 45, 60].map((mins) {
+                            return _buildChoiceChip(
+                              label: isKhmer ? '$mins នាទី' : '$mins min',
+                              selected: settings.focusDurationMinutes == mins,
+                              onSelected: () => settings.setFocusDuration(mins),
+                            );
+                          }).toList(),
+                        ),
+
+                        const SizedBox(height: 14),
+                        Text(
+                          isKhmer ? 'រយៈពេលសម្រាកខ្លី (Short Break):' : 'Short Break Duration:',
+                          style: TextStyle(fontSize: 13, color: textColor.withValues(alpha:0.8)),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [3, 5, 10].map((mins) {
+                            return _buildChoiceChip(
+                              label: isKhmer ? '$mins នាទី' : '$mins min',
+                              selected: settings.shortBreakMinutes == mins,
+                              onSelected: () => settings.setShortBreakDuration(mins),
+                            );
+                          }).toList(),
+                        ),
+
+                        const SizedBox(height: 14),
+                        Text(
+                          isKhmer ? 'រយៈពេលសម្រាកវែង (Long Break):' : 'Long Break Duration:',
+                          style: TextStyle(fontSize: 13, color: textColor.withValues(alpha:0.8)),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [10, 15, 20, 30].map((mins) {
+                            return _buildChoiceChip(
+                              label: isKhmer ? '$mins នាទី' : '$mins min',
+                              selected: settings.longBreakMinutes == mins,
+                              onSelected: () => settings.setLongBreakDuration(mins),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+
+                    // Tab 4: ⚙️ System (ប្រព័ន្ធ)
                     ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
@@ -434,6 +587,30 @@ class SettingsDialog extends StatelessWidget {
                           value: settings.oledPixelShift,
                           onChanged: (val) => settings.toggleOledPixelShift(val),
                         ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Text(
+                              isKhmer ? 'ទំហំពុម្ពអក្សរ (Font Scale)' : 'Font Display Scale',
+                              style: TextStyle(fontSize: 14, color: textColor.withValues(alpha:0.9)),
+                            ),
+                            Expanded(
+                              child: Slider(
+                                value: settings.fontScale,
+                                min: 0.8,
+                                max: 1.4,
+                                divisions: 6,
+                                activeColor: textColor,
+                                inactiveColor: textColor.withValues(alpha:0.2),
+                                onChanged: (val) => settings.setFontScale(val),
+                              ),
+                            ),
+                            Text(
+                              '${(settings.fontScale * 100).round()}%',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: textColor),
+                            ),
+                          ],
+                        ),
 
                         const SizedBox(height: 20),
                         _buildSectionTitle(isKhmer ? '⌨️ គ្រាប់ចុចកាត់ (Keyboard Shortcuts)' : '⌨️ Keyboard Shortcuts Guide'),
@@ -441,7 +618,7 @@ class SettingsDialog extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: textColor.withOpacity(0.06),
+                            color: textColor.withValues(alpha:0.06),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Column(
@@ -475,7 +652,7 @@ class SettingsDialog extends StatelessWidget {
                           ),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            backgroundColor: textColor.withOpacity(0.12),
+                            backgroundColor: textColor.withValues(alpha:0.12),
                             elevation: 0,
                             shadowColor: Colors.transparent,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -493,9 +670,9 @@ class SettingsDialog extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: textColor.withOpacity(0.06),
+                            color: textColor.withValues(alpha:0.06),
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: textColor.withOpacity(0.12), width: 1),
+                            border: Border.all(color: textColor.withValues(alpha:0.12), width: 1),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -505,7 +682,7 @@ class SettingsDialog extends StatelessWidget {
                                   Container(
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: textColor.withOpacity(0.15),
+                                      color: textColor.withValues(alpha:0.15),
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(Icons.code_rounded, color: textColor, size: 24),
@@ -529,7 +706,7 @@ class SettingsDialog extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
-                                            color: textColor.withOpacity(0.7),
+                                            color: textColor.withValues(alpha:0.7),
                                           ),
                                         ),
                                       ],
@@ -538,7 +715,7 @@ class SettingsDialog extends StatelessWidget {
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              Divider(color: textColor.withOpacity(0.12), height: 1),
+                              Divider(color: textColor.withValues(alpha:0.12), height: 1),
                               const SizedBox(height: 12),
                               Text(
                                 isKhmer
@@ -547,7 +724,7 @@ class SettingsDialog extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 13,
                                   height: 1.4,
-                                  color: textColor.withOpacity(0.85),
+                                  color: textColor.withValues(alpha:0.85),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -559,7 +736,7 @@ class SettingsDialog extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color: textColor.withOpacity(0.7),
+                                      color: textColor.withValues(alpha:0.7),
                                     ),
                                   ),
                                   SelectableText(
@@ -567,7 +744,7 @@ class SettingsDialog extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: textColor.withOpacity(0.9),
+                                      color: textColor.withValues(alpha:0.9),
                                       decoration: TextDecoration.underline,
                                     ),
                                   ),
@@ -594,7 +771,7 @@ class SettingsDialog extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: textColor.withOpacity(0.15),
+            color: textColor.withValues(alpha:0.15),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -613,7 +790,7 @@ class SettingsDialog extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: textColor.withOpacity(0.9),
+              color: textColor.withValues(alpha:0.9),
             ),
           ),
         ),
@@ -627,7 +804,7 @@ class SettingsDialog extends StatelessWidget {
       style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.bold,
-        color: textColor.withOpacity(0.9),
+        color: textColor.withValues(alpha:0.9),
       ),
     );
   }
@@ -642,7 +819,7 @@ class SettingsDialog extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? textColor.withOpacity(0.22) : textColor.withOpacity(0.06),
+          color: selected ? textColor.withValues(alpha:0.22) : textColor.withValues(alpha:0.06),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
@@ -675,7 +852,7 @@ class SettingsDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: textColor.withOpacity(0.9),
+                color: textColor.withValues(alpha:0.9),
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -684,9 +861,9 @@ class SettingsDialog extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeThumbColor: textColor,
-            activeTrackColor: textColor.withOpacity(0.3),
-            inactiveThumbColor: textColor.withOpacity(0.5),
-            inactiveTrackColor: textColor.withOpacity(0.1),
+            activeTrackColor: textColor.withValues(alpha:0.3),
+            inactiveThumbColor: textColor.withValues(alpha:0.5),
+            inactiveTrackColor: textColor.withValues(alpha:0.1),
           ),
         ],
       ),

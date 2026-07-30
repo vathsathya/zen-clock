@@ -74,7 +74,7 @@ class CalendarViewState extends State<CalendarView> {
           backgroundColor: const Color(0xFF111111),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
-            side: BorderSide(color: Colors.white.withOpacity(0.12), width: 1.0),
+            side: BorderSide(color: Colors.white.withValues(alpha:0.12), width: 1.0),
           ),
           title: Text(
             isKhmer ? "📅 កាលបរិច្ឆេទ" : "📅 Date Details",
@@ -109,7 +109,7 @@ class CalendarViewState extends State<CalendarView> {
                   widget.fontFamily,
                   TextStyle(
                     fontSize: 16,
-                    color: widget.textColor.withOpacity(0.9),
+                    color: widget.textColor.withValues(alpha:0.9),
                   ),
                 ),
               ),
@@ -120,7 +120,7 @@ class CalendarViewState extends State<CalendarView> {
                   widget.fontFamily,
                   TextStyle(
                     fontSize: 16,
-                    color: widget.textColor.withOpacity(0.85),
+                    color: widget.textColor.withValues(alpha:0.85),
                   ),
                 ),
               ),
@@ -129,7 +129,7 @@ class CalendarViewState extends State<CalendarView> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: widget.primaryColor.withOpacity(0.2),
+                    color: widget.primaryColor.withValues(alpha:0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -150,7 +150,7 @@ class CalendarViewState extends State<CalendarView> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.12),
+                    color: Colors.white.withValues(alpha:0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -168,7 +168,7 @@ class CalendarViewState extends State<CalendarView> {
               ],
               if (widget.weatherInfo != null && isToday) ...[
                 const SizedBox(height: 14),
-                Divider(color: widget.textColor.withOpacity(0.2)),
+                Divider(color: widget.textColor.withValues(alpha:0.2)),
                 const SizedBox(height: 6),
                 Row(
                   children: [
@@ -244,42 +244,52 @@ class CalendarViewState extends State<CalendarView> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             children: [
-              // Header Navigation Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              // Header Navigation Bar (Vertical Hierarchy)
+              Column(
                 children: [
-                  IconButton(
-                    onPressed: previousMonth,
-                    icon: Icon(Icons.chevron_left_rounded, color: widget.textColor, size: 36),
-                    tooltip: isKhmer ? 'ខែមុន' : 'Previous Month',
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    monthTitleStr,
-                    style: FontService.getTextStyle(
-                      widget.fontFamily,
-                      TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: widget.textColor,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: previousMonth,
+                        icon: Icon(Icons.chevron_left_rounded, color: widget.textColor, size: 40),
+                        tooltip: isKhmer ? 'ខែមុន' : 'Previous Month',
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      Text(
+                        monthTitleStr,
+                        style: FontService.getTextStyle(
+                          widget.fontFamily,
+                          TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: widget.textColor,
+                            shadows: const [
+                              Shadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 2)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      IconButton(
+                        onPressed: nextMonth,
+                        icon: Icon(Icons.chevron_right_rounded, color: widget.textColor, size: 40),
+                        tooltip: isKhmer ? 'ខែបន្ទាប់' : 'Next Month',
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: nextMonth,
-                    icon: Icon(Icons.chevron_right_rounded, color: widget.textColor, size: 36),
-                    tooltip: isKhmer ? 'ខែបន្ទាប់' : 'Next Month',
-                  ),
-                  const SizedBox(width: 16),
+                  const SizedBox(height: 4),
                   Text(
-                    "•   $zodiacStr",
+                    zodiacStr,
                     style: FontService.getTextStyle(
                       widget.fontFamily,
                       TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: widget.primaryColor.withOpacity(0.85),
+                        color: widget.primaryColor.withValues(alpha:0.9),
+                        shadows: const [
+                          Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(0, 1)),
+                        ],
                       ),
                     ),
                   ),
@@ -294,7 +304,7 @@ class CalendarViewState extends State<CalendarView> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       decoration: BoxDecoration(
-                        color: widget.primaryColor.withOpacity(0.16),
+                        color: widget.primaryColor.withValues(alpha:0.16),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
@@ -325,8 +335,8 @@ class CalendarViewState extends State<CalendarView> {
                   final dayColor = isSunday
                       ? widget.primaryColor
                       : isSaturday
-                          ? widget.primaryColor.withOpacity(0.85)
-                          : widget.textColor.withOpacity(0.9);
+                          ? widget.primaryColor.withValues(alpha:0.85)
+                          : widget.textColor.withValues(alpha:0.9);
                   return Expanded(
                     child: Center(
                       child: Text(
@@ -424,7 +434,7 @@ class CalendarViewState extends State<CalendarView> {
                   if (monthlyHolidays.isNotEmpty) ...[
                     Text(
                       "   •   ",
-                      style: TextStyle(color: widget.textColor.withOpacity(0.4)),
+                      style: TextStyle(color: widget.textColor.withValues(alpha:0.4)),
                     ),
                     ...monthlyHolidays.map((h) {
                       final hDayNum = isKhmer ? _toKhmerDigits(h.date.day.toString()) : h.date.day.toString();
@@ -437,7 +447,7 @@ class CalendarViewState extends State<CalendarView> {
                           TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: widget.textColor.withOpacity(0.9),
+                            color: widget.textColor.withValues(alpha:0.9),
                           ),
                         ),
                       );
@@ -494,7 +504,7 @@ class _CalendarDayCellWidgetState extends State<_CalendarDayCellWidget> {
         ? widget.primaryColor
         : (widget.isToday
             ? Colors.black
-            : (widget.isHolyDay ? widget.primaryColor : widget.textColor.withOpacity(0.95)));
+            : (widget.isHolyDay ? widget.primaryColor : widget.textColor.withValues(alpha:0.95)));
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -511,7 +521,7 @@ class _CalendarDayCellWidgetState extends State<_CalendarDayCellWidget> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               decoration: BoxDecoration(
-                color: _isHovered ? widget.primaryColor.withOpacity(0.12) : Colors.transparent,
+                color: _isHovered ? widget.primaryColor.withValues(alpha:0.12) : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -527,7 +537,7 @@ class _CalendarDayCellWidgetState extends State<_CalendarDayCellWidget> {
                       boxShadow: widget.isToday
                           ? [
                               BoxShadow(
-                                color: widget.primaryColor.withOpacity(0.5),
+                                color: widget.primaryColor.withValues(alpha:0.5),
                                 blurRadius: 18,
                                 spreadRadius: 1,
                               ),
@@ -542,6 +552,11 @@ class _CalendarDayCellWidgetState extends State<_CalendarDayCellWidget> {
                           fontSize: 28,
                           fontWeight: (widget.isToday || _isHovered) ? FontWeight.w900 : FontWeight.bold,
                           color: activeTextColor,
+                          shadows: widget.isToday
+                              ? null
+                              : const [
+                                  Shadow(color: Colors.black54, blurRadius: 4, offset: Offset(0, 1)),
+                                ],
                         ),
                       ),
                     ),
@@ -564,7 +579,10 @@ class _CalendarDayCellWidgetState extends State<_CalendarDayCellWidget> {
                                 ? Colors.white
                                 : (widget.isToday
                                     ? widget.primaryColor
-                                    : (widget.isHolyDay ? widget.primaryColor : widget.textColor.withOpacity(0.65))),
+                                    : (widget.isHolyDay ? widget.primaryColor : widget.textColor.withValues(alpha:0.85))),
+                            shadows: const [
+                              Shadow(color: Colors.black87, blurRadius: 4, offset: Offset(0, 1)),
+                            ],
                           ),
                         ),
                       ),

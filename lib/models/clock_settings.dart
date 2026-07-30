@@ -33,7 +33,7 @@ enum ThemePreset {
 }
 
 enum DisplayMode { clock, calendar }
-enum LiveWallpaperMode { off, auraPulse, cosmicStars, gentleRain }
+enum LiveWallpaperMode { off, auraPulse, cosmicStars, gentleRain, thunderstorm, customImage, provinceTheme, videoThunderstorm }
 enum OrientationMode { auto, horizontal, vertical }
 enum DisplayTarget { secondary, primary }
 enum TimeFormat { h12, h24 }
@@ -41,9 +41,9 @@ enum TimeFormat { h12, h24 }
 class ClockSettings extends ChangeNotifier {
   ThemePreset _themePreset = ThemePreset.battambang; // Highlight Battambang by Default!
   DisplayMode _displayMode = DisplayMode.clock;
-  LiveWallpaperMode _liveWallpaperMode = LiveWallpaperMode.auraPulse;
-  OrientationMode _orientationMode = OrientationMode.auto;
-  DisplayTarget _displayTarget = DisplayTarget.secondary;
+  LiveWallpaperMode _liveWallpaperMode = LiveWallpaperMode.videoThunderstorm;
+  final OrientationMode _orientationMode = OrientationMode.auto;
+  final DisplayTarget _displayTarget = DisplayTarget.secondary;
   TimeFormat _timeFormat = TimeFormat.h12;
 
   bool _showSeconds = true;
@@ -58,8 +58,17 @@ class ClockSettings extends ChangeNotifier {
   bool _preventDisplaySleep = true;
   bool _alwaysOnTop = true;
   bool _autoSecondaryDisplay = true;
-  double _glassOpacity = 0.65;
+  final double _glassOpacity = 0.65;
   String _fontFamily = 'Kantumruy Pro';
+  String _customImagePath = 'assets/images/angkor_night.png';
+
+  // New Focus Timer & Audio & Display Scale settings
+  int _focusDurationMinutes = 25;
+  int _shortBreakMinutes = 5;
+  int _longBreakMinutes = 15;
+  bool _enableSoundEffects = true;
+  double _masterVolume = 0.5;
+  double _fontScale = 1.0;
 
   ThemePreset get themePreset => _themePreset;
   DisplayMode get displayMode => _displayMode;
@@ -81,6 +90,14 @@ class ClockSettings extends ChangeNotifier {
   bool get autoSecondaryDisplay => _autoSecondaryDisplay;
   double get glassOpacity => _glassOpacity;
   String get fontFamily => _fontFamily;
+  String get customImagePath => _customImagePath;
+
+  int get focusDurationMinutes => _focusDurationMinutes;
+  int get shortBreakMinutes => _shortBreakMinutes;
+  int get longBreakMinutes => _longBreakMinutes;
+  bool get enableSoundEffects => _enableSoundEffects;
+  double get masterVolume => _masterVolume;
+  double get fontScale => _fontScale;
 
   ClockSettings() {
     _loadFromPrefs();
@@ -96,7 +113,7 @@ class ClockSettings extends ChangeNotifier {
     if (displayModeIndex >= 0 && displayModeIndex < DisplayMode.values.length) {
       _displayMode = DisplayMode.values[displayModeIndex];
     }
-    int liveWallpaperIndex = prefs.getInt('liveWallpaperMode') ?? LiveWallpaperMode.auraPulse.index;
+    int liveWallpaperIndex = prefs.getInt('liveWallpaperMode') ?? LiveWallpaperMode.videoThunderstorm.index;
     if (liveWallpaperIndex >= 0 && liveWallpaperIndex < LiveWallpaperMode.values.length) {
       _liveWallpaperMode = LiveWallpaperMode.values[liveWallpaperIndex];
     }
@@ -116,11 +133,61 @@ class ClockSettings extends ChangeNotifier {
     _preventDisplaySleep = prefs.getBool('preventDisplaySleep') ?? true;
     _autoSecondaryDisplay = prefs.getBool('autoSecondaryDisplay') ?? true;
     _fontFamily = prefs.getString('fontFamily') ?? 'Kantumruy Pro';
+    _customImagePath = prefs.getString('customImagePath') ?? 'assets/images/angkor_night.png';
+
+    _focusDurationMinutes = prefs.getInt('focusDurationMinutes') ?? 25;
+    _shortBreakMinutes = prefs.getInt('shortBreakMinutes') ?? 5;
+    _longBreakMinutes = prefs.getInt('longBreakMinutes') ?? 15;
+    _enableSoundEffects = prefs.getBool('enableSoundEffects') ?? true;
+    _masterVolume = prefs.getDouble('masterVolume') ?? 0.5;
+    _fontScale = prefs.getDouble('fontScale') ?? 1.0;
 
     try {
       await TrayService.instance.updateMenu(useKhmerDigits: _useKhmerDigits, displayMode: _displayMode);
     } catch (_) {}
 
+    notifyListeners();
+  }
+
+  void setFocusDuration(int minutes) async {
+    _focusDurationMinutes = minutes;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('focusDurationMinutes', minutes);
+    notifyListeners();
+  }
+
+  void setShortBreakDuration(int minutes) async {
+    _shortBreakMinutes = minutes;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('shortBreakMinutes', minutes);
+    notifyListeners();
+  }
+
+  void setLongBreakDuration(int minutes) async {
+    _longBreakMinutes = minutes;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('longBreakMinutes', minutes);
+    notifyListeners();
+  }
+
+  void toggleSoundEffects(bool val) async {
+    _enableSoundEffects = val;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('enableSoundEffects', val);
+    notifyListeners();
+  }
+
+  void setMasterVolume(double val) async {
+    _masterVolume = val.clamp(0.0, 1.0);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('masterVolume', _masterVolume);
+    notifyListeners();
+  }
+
+  void setFontScale(double val) async {
+    _fontScale = val.clamp(0.7, 1.6);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('fontScale', _fontScale);
     notifyListeners();
   }
 
@@ -245,6 +312,23 @@ class ClockSettings extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('autoSecondaryDisplay', val);
     notifyListeners();
+  }
+
+  void setCustomImagePath(String path) async {
+    _customImagePath = path;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('customImagePath', path);
+    notifyListeners();
+  }
+
+  static String getProvinceWallpaperPath(ThemePreset preset) {
+    switch (preset) {
+      case ThemePreset.siemReap:
+      case ThemePreset.battambang:
+      case ThemePreset.phnomPenh:
+      default:
+        return 'assets/images/angkor_night.png';
+    }
   }
 
   Future<void> resetToDefaults() async {

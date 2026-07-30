@@ -42,12 +42,14 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
     return FittedBox(
       fit: BoxFit.scaleDown,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
           // Centered Header Row: Lunar Date • Zodiac • Holy Day Badge
           Wrap(
             alignment: WrapAlignment.center,
@@ -71,7 +73,7 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
 
               Text(
                 "•",
-                style: TextStyle(fontSize: zodiacFontSize, color: Colors.white.withOpacity(0.4)),
+                style: TextStyle(fontSize: zodiacFontSize, color: Colors.white.withValues(alpha: 0.4)),
               ),
 
               // Zodiac Animal & Era
@@ -82,41 +84,47 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
                   TextStyle(
                     fontSize: zodiacFontSize,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ),
 
-              // Holy Day Badge (ថ្ងៃសីល)
+              // Holy Day Badge (ថ្ងៃសីល) - Pure Borderless Glowing Indicator
               if (isHolyDay && widget.settings.showKhmerHolyDays) ...[
                 Text(
                   "•",
-                  style: TextStyle(fontSize: zodiacFontSize, color: Colors.white.withOpacity(0.4)),
+                  style: TextStyle(fontSize: zodiacFontSize, color: Colors.white.withValues(alpha: 0.4)),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: widget.primaryColor.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('🌕', style: TextStyle(fontSize: holyDayFontSize)),
-                      const SizedBox(width: 6),
-                      Text(
-                        widget.settings.useKhmerDigits ? "ថ្ងៃសីល" : "Holy Day",
-                        style: FontService.getTextStyle(
-                          widget.settings.fontFamily,
-                          TextStyle(
-                            fontSize: holyDayFontSize,
-                            fontWeight: FontWeight.bold,
-                            color: widget.primaryColor,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFD700),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFFFD700).withValues(alpha: 0.85),
+                            blurRadius: 10,
                           ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      widget.settings.useKhmerDigits ? "ថ្ងៃសីល" : "Holy Day",
+                      style: FontService.getTextStyle(
+                        widget.settings.fontFamily,
+                        TextStyle(
+                          fontSize: holyDayFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFFFD700),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ],
@@ -148,7 +156,7 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -160,7 +168,7 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
                             TextStyle(
                               fontSize: proverbFontSize + 2,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white.withOpacity(0.95),
+                              color: Colors.white.withValues(alpha: 0.95),
                               fontStyle: FontStyle.normal,
                             ),
                           ),
@@ -169,11 +177,11 @@ class _KhmerCultureCardState extends State<KhmerCultureCard> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 10),
                       Icon(
                         Icons.refresh_rounded,
-                        size: proverbFontSize,
-                        color: Colors.white.withOpacity(0.5),
+                        size: proverbFontSize + 2,
+                        color: Colors.white.withValues(alpha: 0.65),
                       ),
                     ],
                   ),

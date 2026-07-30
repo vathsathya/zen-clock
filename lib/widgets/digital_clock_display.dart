@@ -33,20 +33,27 @@ class DigitalClockDisplay extends StatelessWidget {
     final screenHeight = mediaQuery.size.height;
 
     // Dynamically scale font sizes to fit phone, tablet, and desktop screens seamlessly
-    final double baseFontSize = isPortrait
+    final double baseFontSize = (isPortrait
         ? (screenWidth * 0.35).clamp(120.0, 260.0)
-        : (screenHeight * 0.45).clamp(140.0, 360.0);
+        : (screenHeight * 0.45).clamp(140.0, 360.0)) * settings.fontScale;
     final double clockFontSize = baseFontSize;
 
     final hourStyle = FontService.getTextStyle(
       settings.fontFamily,
       TextStyle(
         fontSize: clockFontSize,
-        fontWeight: settings.useKhmerDigits ? FontWeight.w700 : FontWeight.w900,
-        letterSpacing: settings.useKhmerDigits ? 1.5 : 0.0,
+        fontWeight: settings.useKhmerDigits ? FontWeight.w700 : FontWeight.w800,
+        letterSpacing: settings.useKhmerDigits ? 1.0 : -1.0,
         color: textColor,
         height: 1.0,
         fontFeatures: const [FontFeature.tabularFigures()],
+        shadows: [
+          Shadow(
+            color: Colors.black.withValues(alpha: 0.70),
+            blurRadius: 24.0,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
     );
 
@@ -54,11 +61,18 @@ class DigitalClockDisplay extends StatelessWidget {
       settings.fontFamily,
       TextStyle(
         fontSize: clockFontSize,
-        fontWeight: settings.useKhmerDigits ? FontWeight.w700 : FontWeight.w900,
-        letterSpacing: settings.useKhmerDigits ? 1.5 : 0.0,
+        fontWeight: settings.useKhmerDigits ? FontWeight.w700 : FontWeight.w800,
+        letterSpacing: settings.useKhmerDigits ? 1.0 : -1.0,
         color: primaryColor,
         height: 1.0,
         fontFeatures: const [FontFeature.tabularFigures()],
+        shadows: [
+          Shadow(
+            color: Colors.black.withValues(alpha: 0.70),
+            blurRadius: 24.0,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
     );
 
@@ -78,8 +92,21 @@ class DigitalClockDisplay extends StatelessWidget {
       TextStyle(
         fontSize: isPortrait ? 36.0 : 48.0,
         fontWeight: FontWeight.bold,
-        color: textColor.withOpacity(0.9),
+        color: textColor.withValues(alpha: 0.9),
         height: 1.0,
+      ),
+    );
+
+    final isColonActive = currentSecond % 2 == 0;
+
+    final colonStyle = FontService.getTextStyle(
+      settings.fontFamily,
+      TextStyle(
+        fontSize: clockFontSize,
+        fontWeight: settings.useKhmerDigits ? FontWeight.w700 : FontWeight.w900,
+        color: primaryColor,
+        height: 1.0,
+        fontFeatures: const [FontFeature.tabularFigures()],
       ),
     );
 
@@ -94,9 +121,10 @@ class DigitalClockDisplay extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 250),
-              opacity: (currentSecond % 2 != 0) ? 0.25 : 1.0,
-              child: Text(':', style: minuteStyle),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOutSine,
+              opacity: isColonActive ? 1.0 : 0.25,
+              child: Text(':', style: colonStyle),
             ),
           ),
           Text(minutes, style: minuteStyle),

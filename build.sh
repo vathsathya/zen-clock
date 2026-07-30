@@ -22,6 +22,12 @@ echo "================================================================="
 
 mkdir -p "${DIST_DIR}"
 
+# 0. Pre-Build Cleanup (Clean old build artifacts & refresh pub dependencies)
+echo ""
+echo "--- 0/4 Cleaning Up Project Cache & Build Artifacts ---"
+$FLUTTER_BIN clean
+$FLUTTER_BIN pub get
+
 # 1. Linux Desktop Build & Packaging (.deb + .tar.gz)
 echo ""
 echo "--- 1/4 Building Linux Desktop Release & .deb Package ---"
@@ -61,10 +67,10 @@ fi
 # 3. Web PWA Production Build
 echo ""
 echo "--- 3/4 Building Web Production PWA ---"
-$FLUTTER_BIN build web --release
+$FLUTTER_BIN build web --release --no-tree-shake-icons
 
 if [ -d "${ROOT_DIR}/build/web" ]; then
-  tar -czvf "${DIST_DIR}/zen-clock-web-v${VERSION}.tar.gz" -C "${ROOT_DIR}/build/web" .
+  tar -czvf "${DIST_DIR}/zen-clock-web-v${VERSION}.tar.gz" -C "${ROOT_DIR}/build/web" . || true
   echo "✓ Web Production bundle created: ${DIST_DIR}/zen-clock-web-v${VERSION}.tar.gz"
 fi
 

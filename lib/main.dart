@@ -106,11 +106,9 @@ class ZenClockApp extends StatelessWidget {
       dividerColor: const Color(0xFF232323),
       colorScheme: const ColorScheme.dark(
         surface: Color(0xFF111111),
-        background: Color(0xFF000000),
         primary: Color(0xFFFF9800),
         secondary: Color(0xFFFFC857),
         onSurface: Color(0xFFFFFFFF),
-        onBackground: Color(0xFFFFFFFF),
         outline: Color(0xFF232323),
       ),
       fontFamily: 'Kantumruy Pro',

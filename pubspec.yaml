@@ -1,7 +1,7 @@
 name: zen_clock
 description: "Ultra-Lightweight Zen Digital Clock for Windows, Linux, and Android"
 publish_to: 'none'
-version: 1.0.6+6
+version: 1.2.0+28
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -18,6 +18,8 @@ dependencies:
   wakelock_plus: ^1.2.8
   google_fonts: ^8.2.0
   http: ^1.2.0
+  audioplayers: ^6.0.0
+  video_player: ^2.13.0
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +31,5 @@ flutter:
   assets:
     - assets/data/khmer_proverbs.json
     - assets/icons/app_icon.png
+    - assets/images/
+    - assets/videos/

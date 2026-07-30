@@ -9,10 +9,13 @@ import '../models/clock_settings.dart';
 import '../services/weather_service.dart';
 import '../services/tray_service.dart';
 import '../services/font_service.dart';
+import '../services/zen_audio_service.dart';
 import '../utils/khmer_string_utils.dart';
 import '../widgets/digital_clock_display.dart';
 import '../widgets/khmer_culture_card.dart';
 import '../widgets/quick_control_bar.dart';
+import '../widgets/weather_animation_painter.dart';
+import '../widgets/video_background_widget.dart';
 import 'settings_view.dart';
 import 'calendar_view.dart';
 import 'focus_timer_view.dart';
@@ -67,6 +70,14 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _now = DateTime.now();
+    ZenAudioService.instance.init();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final settings = Provider.of<ClockSettings>(context, listen: false);
+        _loadWeatherForTheme(settings.themePreset);
+      }
+    });
 
     _wallpaperAnimController = AnimationController(
       vsync: this,
@@ -75,13 +86,8 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
-        final newNow = DateTime.now();
-        final settings = Provider.of<ClockSettings>(context, listen: false);
-        if (!settings.showSeconds && newNow.minute == _now.minute && newNow.hour == _now.hour) {
-          return;
-        }
         setState(() {
-          _now = newNow;
+          _now = DateTime.now();
         });
       }
     });
@@ -199,6 +205,9 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     _weatherTimer?.cancel();
     _wallpaperAnimController.dispose();
     _focusNode.dispose();
+    TrayService.instance.onOpenSettings = null;
+    TrayService.instance.onChangeDisplayMode = null;
+    TrayService.instance.onToggleLanguage = null;
     super.dispose();
   }
 
@@ -289,57 +298,70 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   }
 
   Widget _buildHorizontalWeatherStrip(ClockSettings settings, ClockStyleData style) {
-    if (!settings.showWeather || _weatherInfo == null || _weatherInfo!.dailyItems.isEmpty) {
+    if (!settings.showWeather) {
+      return const SizedBox(height: 24);
+    }
+
+    final info = _weatherInfo ?? WeatherService.getFallbackWeather(settings.themePreset);
+    if (info.dailyItems.isEmpty) {
       return const SizedBox(height: 24);
     }
 
     final isKhmer = settings.useKhmerDigits;
-    final locName = _weatherInfo!.getLocationName(useKhmerDigits: isKhmer);
+    final locName = info.getLocationName(useKhmerDigits: isKhmer);
 
-    int todayIndex = _weatherInfo!.dailyItems.indexWhere((item) => item.isToday);
+    int todayIndex = info.dailyItems.indexWhere((item) => item.isToday);
     if (todayIndex == -1) todayIndex = 0;
 
-    int endIndex = min(todayIndex + 5, _weatherInfo!.dailyItems.length);
-    final displayItems = _weatherInfo!.dailyItems.sublist(todayIndex, endIndex);
+    int endIndex = min(todayIndex + 5, info.dailyItems.length);
+    final displayItems = info.dailyItems.sublist(todayIndex, endIndex);
 
     final screenWidth = MediaQuery.of(context).size.width;
     final locFontSize = (screenWidth * 0.016).clamp(16.0, 22.0);
 
-    return Container(
-      color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            locName,
-            style: TextStyle(
-              fontSize: locFontSize,
-              color: Colors.white.withOpacity(0.75),
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.4,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              locName,
+              style: FontService.getTextStyle(
+                settings.fontFamily,
+                TextStyle(
+                  fontSize: locFontSize,
+                  color: style.primaryColor,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.4,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 12,
-            runSpacing: 8,
-            children: displayItems.map((item) {
-              return WeatherDayItemWidget(
-                item: item,
-                isKhmer: isKhmer,
-                settings: settings,
-                style: style,
-                onTap: () {
-                  if (_weatherInfo != null) {
-                    WeatherForecastDialog.show(context, _weatherInfo!, style.textColor, style.bgColor);
-                  }
-                },
-              );
-            }).toList(),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16,
+              runSpacing: 8,
+              children: displayItems.map((item) {
+                return WeatherDayItemWidget(
+                  item: item,
+                  isKhmer: isKhmer,
+                  settings: settings,
+                  style: style,
+                  onTap: () {
+                    if (_weatherInfo != null) {
+                      WeatherForecastDialog.show(context, _weatherInfo!, style.textColor, style.bgColor);
+                    }
+                  },
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -396,12 +418,90 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                   child: AnimatedBuilder(
                     animation: _wallpaperAnimController,
                     builder: (context, child) {
-                      return CustomPaint(
-                        painter: ZenBackgroundPainter(
-                          themeColor: style.primaryColor,
-                          wallpaperMode: settings.liveWallpaperMode,
-                          animProgress: _wallpaperAnimController.value,
-                        ),
+                      if (settings.liveWallpaperMode == LiveWallpaperMode.videoThunderstorm ||
+                          settings.liveWallpaperMode == LiveWallpaperMode.thunderstorm ||
+                          settings.liveWallpaperMode == LiveWallpaperMode.gentleRain) {
+                        return Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            const Positioned.fill(
+                              child: VideoBackgroundWidget(
+                                fallbackImagePath: 'assets/images/angkor_night.png',
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: CustomPaint(
+                                painter: WeatherAnimationPainter(
+                                  weatherInfo: _weatherInfo,
+                                  currentTime: _now,
+                                  themeColor: style.primaryColor,
+                                  animProgress: _wallpaperAnimController.value,
+                                  wallpaperMode: settings.liveWallpaperMode,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      if (settings.liveWallpaperMode == LiveWallpaperMode.customImage ||
+                          settings.liveWallpaperMode == LiveWallpaperMode.provinceTheme) {
+                        final imagePath = settings.liveWallpaperMode == LiveWallpaperMode.customImage
+                            ? settings.customImagePath
+                            : ClockSettings.getProvinceWallpaperPath(settings.themePreset);
+
+                        return Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              imagePath,
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, err, stack) {
+                                return Image.asset('assets/images/angkor_night.png', fit: BoxFit.cover);
+                              },
+                            ),
+                            // Soft Dark Overlay for Maximum High Contrast Digits Readability
+                            Container(
+                              color: Colors.black.withValues(alpha: 0.55),
+                            ),
+                          ],
+                        );
+                      }
+                      if (settings.liveWallpaperMode == LiveWallpaperMode.off) {
+                        return CustomPaint(
+                          painter: ZenBackgroundPainter(
+                            themeColor: style.primaryColor,
+                            wallpaperMode: settings.liveWallpaperMode,
+                            animProgress: _wallpaperAnimController.value,
+                          ),
+                        );
+                      }
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          const VideoBackgroundWidget(
+                            fallbackImagePath: 'assets/images/angkor_night.png',
+                          ),
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: WeatherAnimationPainter(
+                                weatherInfo: _weatherInfo,
+                                currentTime: _now,
+                                themeColor: style.primaryColor,
+                                animProgress: _wallpaperAnimController.value,
+                                wallpaperMode: settings.liveWallpaperMode,
+                              ),
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: ZenBackgroundPainter(
+                                themeColor: style.primaryColor,
+                                wallpaperMode: settings.liveWallpaperMode,
+                                animProgress: _wallpaperAnimController.value,
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
@@ -484,6 +584,29 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                 ),
               ),
 
+              // Top-Most Weather & Lightning Overlay Painter (On Top of Clock Digits & UI Text)
+              if (settings.liveWallpaperMode != LiveWallpaperMode.off &&
+                  settings.liveWallpaperMode != LiveWallpaperMode.videoThunderstorm)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: AnimatedBuilder(
+                      animation: _wallpaperAnimController,
+                      builder: (context, child) {
+                        return CustomPaint(
+                          painter: WeatherAnimationPainter(
+                            weatherInfo: _weatherInfo,
+                            currentTime: _now,
+                            themeColor: style.primaryColor,
+                            animProgress: _wallpaperAnimController.value,
+                            wallpaperMode: settings.liveWallpaperMode,
+                            isOverlay: true,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
               // Quick Control Bar (Floating Navigation Dock - Top Right Corner)
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 220),
@@ -524,6 +647,17 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                       onJumpToToday: () {
                         _calendarKey.currentState?.jumpToToday();
                       },
+                      onExitApp: () {
+                        if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+                          try {
+                            windowManager.close();
+                          } catch (_) {
+                            exit(0);
+                          }
+                        } else {
+                          SystemNavigator.pop();
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -548,18 +682,20 @@ class ZenBackgroundPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (wallpaperMode == LiveWallpaperMode.off) {
-      _drawSilhouettes(canvas, size);
-      return;
-    }
+    // 1. Ultra Dark Deep Canvas Base
+    final deepDarkBase = Paint()..color = const Color(0xFF03060D);
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), deepDarkBase);
+
+    // 2. Fullscreen Soft-Blurred Khmer Identity Background (ប្រាសាទអង្គរវត្តកំពូល៥ ពេញអេក្រង់)
+    _drawKhmerIdentityFullscreenBackground(canvas, size);
 
     if (wallpaperMode == LiveWallpaperMode.auraPulse) {
       final pulseFactor = 0.08 + sin(animProgress * 2 * pi) * 0.035;
       final centerAuraPaint = Paint()
         ..shader = RadialGradient(
           colors: [
-            themeColor.withOpacity(pulseFactor),
-            themeColor.withOpacity(pulseFactor * 0.3),
+            themeColor.withValues(alpha: pulseFactor),
+            themeColor.withValues(alpha: pulseFactor * 0.3),
             Colors.transparent,
           ],
           stops: const [0.0, 0.55, 1.0],
@@ -577,7 +713,7 @@ class ZenBackgroundPainter extends CustomPainter {
         final y = rawY < 0 ? rawY + size.height : rawY;
         final starOpacity = (sin(animProgress * 2 * pi + seed) * 0.35 + 0.45).clamp(0.1, 0.85);
 
-        starPaint.color = themeColor.withOpacity(starOpacity);
+        starPaint.color = themeColor.withValues(alpha: starOpacity * 0.6);
         canvas.drawCircle(Offset(x, y), (i % 3 == 0) ? 2.2 : 1.4, starPaint);
       }
     } else if (wallpaperMode == LiveWallpaperMode.gentleRain) {
@@ -592,69 +728,116 @@ class ZenBackgroundPainter extends CustomPainter {
         final y = (animProgress * speed + seed * 10) % (size.height + 40) - 20;
         final length = 14.0 + (i % 4) * 8.0;
 
-        rainPaint.color = themeColor.withOpacity((0.15 + (i % 3) * 0.1).clamp(0.08, 0.35));
+        rainPaint.color = themeColor.withValues(alpha: (0.12 + (i % 3) * 0.08).clamp(0.06, 0.25));
         rainPaint.strokeWidth = (i % 2 == 0) ? 1.5 : 1.0;
         canvas.drawLine(Offset(x, y), Offset(x - 2, y + length), rainPaint);
       }
     }
 
-    _drawSilhouettes(canvas, size);
+    // 3. Focal Dark Vignette Radial Gradient (Focuses 100% on central clock digits)
+    final vignettePaint = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.85,
+        colors: [
+          Colors.transparent,
+          const Color(0xBF000000),
+          const Color(0xF2000000),
+        ],
+        stops: const [0.35, 0.75, 1.0],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), vignettePaint);
   }
 
-  void _drawSilhouettes(Canvas canvas, Size size) {
-    // 1. Angkor Wat Silhouette (Bottom Left)
-    final angkorPaint = Paint()
-      ..color = themeColor.withOpacity(0.045)
+  /// Draws a majestic, soft-blurred silhouetted Angkor Wat 5 Towers & Khmer motif spanning the fullscreen background
+  void _drawKhmerIdentityFullscreenBackground(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final baseY = size.height * 0.90;
+    final scale = (size.width / 1200.0).clamp(0.7, 2.2);
+
+    // Soft Blurred Silhouette Paint (Theme Tinted)
+    final silhouettePaint = Paint()
+      ..color = themeColor.withValues(alpha: 0.09)
       ..style = PaintingStyle.fill;
+
+    final glowBorderPaint = Paint()
+      ..color = themeColor.withValues(alpha: 0.05)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0 * scale;
 
     final path = Path();
-    double startX = 20;
-    double baseY = size.height;
 
-    path.moveTo(0, baseY);
-    path.lineTo(260, baseY);
-    path.lineTo(260, baseY - 24);
-    path.lineTo(startX, baseY - 24);
-
-    path.lineTo(startX + 30, baseY - 65);
-    path.lineTo(startX + 40, baseY - 120);
-    path.lineTo(startX + 50, baseY - 65);
-    path.lineTo(startX + 85, baseY - 90);
-    path.lineTo(startX + 95, baseY - 165);
-    path.lineTo(startX + 105, baseY - 90);
-    path.lineTo(startX + 140, baseY - 65);
-    path.lineTo(startX + 150, baseY - 120);
-    path.lineTo(startX + 160, baseY - 65);
-    path.lineTo(startX + 195, baseY - 24);
-    path.lineTo(0, baseY - 24);
+    // Base Gallery Terrace
+    path.moveTo(centerX - 480 * scale, baseY);
+    path.lineTo(centerX + 480 * scale, baseY);
+    path.lineTo(centerX + 480 * scale, baseY - 35 * scale);
+    path.lineTo(centerX - 480 * scale, baseY - 35 * scale);
     path.close();
 
-    canvas.drawPath(path, angkorPaint);
+    // Second Terrace
+    path.moveTo(centerX - 380 * scale, baseY - 35 * scale);
+    path.lineTo(centerX + 380 * scale, baseY - 35 * scale);
+    path.lineTo(centerX + 380 * scale, baseY - 80 * scale);
+    path.lineTo(centerX - 380 * scale, baseY - 80 * scale);
+    path.close();
 
-    // 2. Seated Buddha Silhouette (Bottom Right)
-    final buddhaCenter = Offset(size.width - 120, size.height - 100);
+    // Central & Side 5 Spire Towers (ប្រាសាទអង្គរវត្តកំពូល៥)
+    _addAngkorSpire(path, centerX, baseY - 80 * scale, 95 * scale, 340 * scale); // Tower 1: Main Central Spire
+    _addAngkorSpire(path, centerX - 160 * scale, baseY - 80 * scale, 75 * scale, 240 * scale); // Tower 2: Middle Left
+    _addAngkorSpire(path, centerX + 160 * scale, baseY - 80 * scale, 75 * scale, 240 * scale); // Tower 3: Middle Right
+    _addAngkorSpire(path, centerX - 320 * scale, baseY - 80 * scale, 60 * scale, 180 * scale); // Tower 4: Outer Left
+    _addAngkorSpire(path, centerX + 320 * scale, baseY - 80 * scale, 60 * scale, 180 * scale); // Tower 5: Outer Right
 
-    final auraPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [themeColor.withOpacity(0.14), Colors.transparent],
-      ).createShader(Rect.fromCircle(center: buddhaCenter, radius: 150));
+    // Draw Background Silhouette & Soft Outer Glow Stroke
+    canvas.drawPath(path, silhouettePaint);
+    canvas.drawPath(path, glowBorderPaint);
 
-    canvas.drawCircle(buddhaCenter, 150, auraPaint);
+    // Subtle Khmer Kbach Lotus Petal Halo Atmosphere Ornaments
+    final kbachPaint = Paint()
+      ..color = themeColor.withValues(alpha: 0.04)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
 
-    final buddhaPaint = Paint()
-      ..color = themeColor.withOpacity(0.075)
-      ..style = PaintingStyle.fill;
+    for (int i = -3; i <= 3; i++) {
+      if (i == 0) continue;
+      final kx = centerX + i * 220 * scale;
+      final ky = size.height * 0.28;
+      canvas.drawCircle(Offset(kx, ky), 70 * scale, kbachPaint);
+      canvas.drawCircle(Offset(kx, ky), 40 * scale, kbachPaint);
+    }
+  }
 
-    final bPath = Path();
-    bPath.addOval(Rect.fromCircle(center: Offset(buddhaCenter.dx, buddhaCenter.dy - 35), radius: 15));
-    bPath.moveTo(buddhaCenter.dx - 30, buddhaCenter.dy + 32);
-    bPath.quadraticBezierTo(buddhaCenter.dx - 24, buddhaCenter.dy - 10, buddhaCenter.dx - 14, buddhaCenter.dy - 18);
-    bPath.quadraticBezierTo(buddhaCenter.dx, buddhaCenter.dy - 24, buddhaCenter.dx + 14, buddhaCenter.dy - 18);
-    bPath.quadraticBezierTo(buddhaCenter.dx + 24, buddhaCenter.dy - 10, buddhaCenter.dx + 30, buddhaCenter.dy + 32);
-    bPath.quadraticBezierTo(buddhaCenter.dx, buddhaCenter.dy + 40, buddhaCenter.dx - 30, buddhaCenter.dy + 32);
-    bPath.close();
+  /// Helper to generate iconic tiered lotus spire tower geometry of Angkor Wat
+  void _addAngkorSpire(Path path, double cx, double baseY, double width, double height) {
+    final hw = width / 2;
+    path.moveTo(cx - hw, baseY);
+    
+    // Tiered Lotus Tower Base Steps
+    double curY = baseY;
+    double curW = hw;
+    final tiers = 6;
+    final tierH = height / tiers;
 
-    canvas.drawPath(bPath, buddhaPaint);
+    for (int t = 0; t < tiers; t++) {
+      curY -= tierH;
+      curW *= 0.86;
+      path.lineTo(cx - curW, curY + tierH * 0.3);
+      path.lineTo(cx - curW, curY);
+    }
+
+    // Lotus Bud Tip Finial
+    path.quadraticBezierTo(cx - curW * 0.5, curY - tierH * 0.5, cx, curY - tierH * 0.8);
+    path.quadraticBezierTo(cx + curW * 0.5, curY - tierH * 0.5, cx + curW, curY);
+
+    for (int t = tiers - 1; t >= 0; t--) {
+      path.lineTo(cx + curW, curY + tierH);
+      curW /= 0.86;
+      curY += tierH;
+      path.lineTo(cx + curW, curY);
+    }
+
+    path.lineTo(cx - hw, baseY);
+    path.close();
   }
 
   @override
@@ -699,7 +882,7 @@ class _WeatherDayItemWidgetState extends State<WeatherDayItemWidget> {
         : widget.item.tempMin.toStringAsFixed(0);
 
     final isToday = widget.item.isToday;
-    final activeColor = _isHovered ? widget.style.primaryColor : (isToday ? widget.style.primaryColor : Colors.white.withOpacity(0.85));
+    final activeColor = _isHovered ? widget.style.primaryColor : (isToday ? widget.style.primaryColor : Colors.white.withValues(alpha:0.85));
 
     final dayFontSize = (screenWidth * 0.020).clamp(18.0, 26.0);
     final iconFontSize = (screenWidth * 0.035).clamp(32.0, 46.0);
@@ -745,7 +928,7 @@ class _WeatherDayItemWidgetState extends State<WeatherDayItemWidget> {
                 style: TextStyle(
                   fontSize: tempFontSize,
                   fontWeight: (isToday || _isHovered) ? FontWeight.bold : FontWeight.w600,
-                  color: _isHovered ? Colors.white : (isToday ? Colors.white : Colors.white.withOpacity(0.75)),
+                  color: _isHovered ? Colors.white : (isToday ? Colors.white : Colors.white.withValues(alpha:0.75)),
                 ),
               ),
             ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/clock_settings.dart';
 import '../services/font_service.dart';
 import '../utils/khmer_string_utils.dart';
+import '../services/zen_audio_service.dart';
 
 enum TimerState { stopped, running, paused }
 enum TimerMode { focus, shortBreak, longBreak }
@@ -29,10 +30,6 @@ class _FocusTimerViewState extends State<FocusTimerView> {
   late int _remainingSeconds;
   Timer? _timer;
 
-  static const int focusDuration = 25 * 60;
-  static const int shortBreakDuration = 5 * 60;
-  static const int longBreakDuration = 15 * 60;
-
   @override
   void initState() {
     super.initState();
@@ -48,11 +45,11 @@ class _FocusTimerViewState extends State<FocusTimerView> {
   int get _totalDuration {
     switch (_mode) {
       case TimerMode.focus:
-        return focusDuration;
+        return widget.settings.focusDurationMinutes * 60;
       case TimerMode.shortBreak:
-        return shortBreakDuration;
+        return widget.settings.shortBreakMinutes * 60;
       case TimerMode.longBreak:
-        return longBreakDuration;
+        return widget.settings.longBreakMinutes * 60;
     }
   }
 
@@ -74,6 +71,9 @@ class _FocusTimerViewState extends State<FocusTimerView> {
       } else {
         _timer?.cancel();
         setState(() => _state = TimerState.stopped);
+        if (widget.settings.enableSoundEffects) {
+          ZenAudioService.instance.playChime();
+        }
         _showCompletedDialog();
       }
     });
@@ -100,7 +100,7 @@ class _FocusTimerViewState extends State<FocusTimerView> {
         backgroundColor: const Color(0xFF111111),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(color: widget.primaryColor.withOpacity(0.4)),
+          side: BorderSide(color: widget.primaryColor.withValues(alpha:0.4)),
         ),
         title: Text(
           isKhmer ? "🎉 សម្រេចការផ្ដោតអារម្មណ៍!" : "🎉 Focus Completed!",
@@ -161,21 +161,27 @@ class _FocusTimerViewState extends State<FocusTimerView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _ModeTab(
-              title: isKhmer ? "ផ្ដោតអារម្មណ៍ (២៥នាទី)" : "Focus (25m)",
+              title: isKhmer
+                  ? "ផ្ដោតអារម្មណ៍ (${KhmerStringUtils.toKhmerDigits(widget.settings.focusDurationMinutes.toString())}នាទី)"
+                  : "Focus (${widget.settings.focusDurationMinutes}m)",
               isSelected: _mode == TimerMode.focus,
               activeColor: widget.primaryColor,
               onTap: () => _switchMode(TimerMode.focus),
             ),
             const SizedBox(width: 12),
             _ModeTab(
-              title: isKhmer ? "សម្រាកខ្លី (៥នាទី)" : "Short Break (5m)",
+              title: isKhmer
+                  ? "សម្រាកខ្លី (${KhmerStringUtils.toKhmerDigits(widget.settings.shortBreakMinutes.toString())}នាទី)"
+                  : "Short Break (${widget.settings.shortBreakMinutes}m)",
               isSelected: _mode == TimerMode.shortBreak,
               activeColor: widget.primaryColor,
               onTap: () => _switchMode(TimerMode.shortBreak),
             ),
             const SizedBox(width: 12),
             _ModeTab(
-              title: isKhmer ? "សម្រាកវែង (១៥នាទី)" : "Long Break (15m)",
+              title: isKhmer
+                  ? "សម្រាកវែង (${KhmerStringUtils.toKhmerDigits(widget.settings.longBreakMinutes.toString())}នាទី)"
+                  : "Long Break (${widget.settings.longBreakMinutes}m)",
               isSelected: _mode == TimerMode.longBreak,
               activeColor: widget.primaryColor,
               onTap: () => _switchMode(TimerMode.longBreak),
@@ -195,7 +201,7 @@ class _FocusTimerViewState extends State<FocusTimerView> {
               child: CircularProgressIndicator(
                 value: progress,
                 strokeWidth: 10,
-                backgroundColor: Colors.white.withOpacity(0.08),
+                backgroundColor: Colors.white.withValues(alpha:0.08),
                 valueColor: AlwaysStoppedAnimation<Color>(widget.primaryColor),
               ),
             ),
@@ -273,8 +279,8 @@ class _FocusTimerViewState extends State<FocusTimerView> {
             OutlinedButton.icon(
               onPressed: _resetTimer,
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white.withOpacity(0.8),
-                side: BorderSide(color: Colors.white.withOpacity(0.2)),
+                foregroundColor: Colors.white.withValues(alpha:0.8),
+                side: BorderSide(color: Colors.white.withValues(alpha:0.2)),
                 padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -310,21 +316,14 @@ class _ModeTab extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? activeColor.withOpacity(0.2) : Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? activeColor : Colors.white.withOpacity(0.1),
-            width: 1.5,
-          ),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        color: Colors.transparent,
         child: Text(
           title,
           style: TextStyle(
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? activeColor : Colors.white.withOpacity(0.7),
+            color: isSelected ? activeColor : Colors.white.withValues(alpha:0.7),
           ),
         ),
       ),

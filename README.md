@@ -1,4 +1,4 @@
-# 🇰🇭 Zen Digital Clock - 25 Cambodian Provinces Edition
+# 🇰🇭 Zen Digital Clock - 25 Cambodian Provinces Edition (v1.2.0)
 
 > **Ultra-Lightweight, Modern, Cambodian Provinces Standby Digital Clock** for **Linux (GTK)**, **Windows (Win32)**, and **Android**.
 
@@ -6,6 +6,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20Android-blue?style=for-the-badge)
 ![Province Themes](https://img.shields.io/badge/Themes-25%20Cambodian%20Provinces-red?style=for-the-badge)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![Version](https://img.shields.io/badge/Version-v1.2.0-gold?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 ---
@@ -66,6 +67,13 @@
 
 ## 🚀 Building from Source
 
+### Prerequisites for Linux (GTK Build)
+```bash
+sudo apt-get update
+sudo apt-get install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+```
+
+### Build Commands
 ```bash
 git clone https://github.com/vathsathya/zen-clock.git
 cd zen-clock

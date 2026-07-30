@@ -46,5 +46,29 @@
     "khmer": "សន្តិភាពចាប់ផ្តើមពីក្នុងចិត្ត",
     "english": "Peace comes from within. Do not seek it without.",
     "category": "zen"
+  },
+  {
+    "id": 9,
+    "khmer": "រលកមិនដែលគ្មានខ្យល់ មនុស្សមិនដែលគ្មានខុស",
+    "english": "There are no waves without wind; there is no human without mistakes.",
+    "category": "proverb"
+  },
+  {
+    "id": 10,
+    "khmer": "ដើរឱ្យមានផ្លូវ និយាយឱ្យមានពាក្យ",
+    "english": "Walk with a clear path, speak with purpose and truth.",
+    "category": "proverb"
+  },
+  {
+    "id": 11,
+    "khmer": "ចិត្តស្ងប់ បញ្ញាកើត",
+    "english": "When the mind is calm, wisdom blooms.",
+    "category": "zen"
+  },
+  {
+    "id": 12,
+    "khmer": "ចង្កៀងរលត់ដោយសារគ្មានប្រេង ចិត្តរលត់ទុក្ខដោយសារគ្មានតណ្ហា",
+    "english": "A lamp goes out without oil; the mind rests without attachment.",
+    "category": "zen"
   }
 ]
