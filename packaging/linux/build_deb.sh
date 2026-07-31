@@ -4,7 +4,7 @@ set -e
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 VERSION=$(grep '^version:' "${ROOT_DIR}/pubspec.yaml" | sed 's/version: //' | cut -d '+' -f 1 | tr -d ' \r\n')
 if [ -z "$VERSION" ]; then
-  VERSION="1.0.6"
+  VERSION="1.2.1"
 fi
 
 ARCH="amd64"

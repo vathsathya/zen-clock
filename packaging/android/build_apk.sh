@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 
-VERSION="1.0.5"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+VERSION=$(grep '^version:' "${ROOT_DIR}/pubspec.yaml" | sed 's/version: //' | cut -d '+' -f 1 | tr -d ' \r\n')
+if [ -z "$VERSION" ]; then
+  VERSION="1.2.1"
+fi
 OUTPUT_DIR="${ROOT_DIR}/build/app/outputs/flutter-apk"
 TARGET_APK="${ROOT_DIR}/zen-clock-v${VERSION}.apk"
 FLUTTER_BIN="/home/yanich/.flutter/bin/flutter"

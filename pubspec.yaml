@@ -1,7 +1,7 @@
 name: zen_clock
 description: "Ultra-Lightweight Zen Digital Clock for Windows, Linux, and Android"
 publish_to: 'none'
-version: 1.2.0+28
+version: 1.2.1+29
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

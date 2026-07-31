@@ -1,4 +1,4 @@
-# 🇰🇭 Zen Digital Clock - 25 Cambodian Provinces Edition (v1.2.0)
+# 🇰🇭 Zen Digital Clock - 25 Cambodian Provinces Edition (v1.2.1)
 
 > **Ultra-Lightweight, Modern, Cambodian Standby Digital Clock** with 25 Cambodian Province Themes, 5-Day Weather Forecast, Khmer Lunar Calendar, AMOLED Dark Canvas, and Customizable Focus Timer for **Linux (GTK)**, **Windows (Win32)**, **Android**, and **Web PWA**.
 
@@ -6,7 +6,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20Android%20%7C%20Web-blue?style=for-the-badge)
 ![Province Themes](https://img.shields.io/badge/Themes-25%20Cambodian%20Provinces-red?style=for-the-badge)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
-![Version](https://img.shields.io/badge/Version-v1.2.0-gold?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-v1.2.1-gold?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 ---
@@ -46,17 +46,17 @@
 ### Linux (Ubuntu / Debian / Linux Mint)
 
 #### Option 1: Native `.deb` Installer Package (Recommended)
-Download `zen-clock_1.2.0_amd64.deb` from the [GitHub Releases](https://github.com/vathsathya/zen-clock/releases) page and install:
+Download `zen-clock_1.2.1_amd64.deb` from the [GitHub Releases](https://github.com/vathsathya/zen-clock/releases) page and install:
 ```bash
-sudo dpkg -i zen-clock_1.2.0_amd64.deb
+sudo dpkg -i zen-clock_1.2.1_amd64.deb
 sudo apt-get install -f # Install any missing dependencies if needed
 ```
 Launch from your application menu or run `zen-clock` in terminal.
 
 #### Option 2: Portable Linux Tarball
 ```bash
-tar -xzvf zen-clock-linux-v1.2.0-x64.tar.gz
-cd zen-clock-linux-v1.2.0-x64
+tar -xzvf zen-clock-linux-v1.2.1-x64.tar.gz
+cd zen-clock-linux-v1.2.1-x64
 ./zen_clock
 ```
 
@@ -65,16 +65,16 @@ cd zen-clock-linux-v1.2.0-x64
 ### Windows (Windows 10 / 11)
 
 #### Option 1: Setup Installer (`.exe`)
-Download and run `ZenClock-Setup-v1.0.1.exe` from [GitHub Releases](https://github.com/vathsathya/zen-clock/releases) to install desktop shortcuts and autostart capabilities.
+Download and run `ZenClock-Setup-v1.2.1.exe` from [GitHub Releases](https://github.com/vathsathya/zen-clock/releases) to install desktop shortcuts and autostart capabilities.
 
 #### Option 2: Portable ZIP Archive
-Extract `zen-clock-windows-v1.2.0-x64.zip` and run `zen_clock.exe`.
+Extract `zen-clock-windows-v1.2.1-x64.zip` and run `zen_clock.exe`.
 
 ---
 
 ### Android Mobile & Tablet
 
-Download `zen-clock-v1.2.0.apk` from [GitHub Releases](https://github.com/vathsathya/zen-clock/releases), open the APK on your Android device, and grant installation permissions.
+Download `zen-clock-v1.2.1.apk` from [GitHub Releases](https://github.com/vathsathya/zen-clock/releases), open the APK on your Android device, and grant installation permissions.
 
 ---
 

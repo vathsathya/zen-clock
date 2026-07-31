@@ -2,6 +2,15 @@
 
 All notable changes to the **Zen Digital Clock** project are documented in this file.
 
+## [v1.2.1] - 2026-07-31
+
+### 🚀 Production Release Synchronization across All Target Platforms
+- 📦 **Cross-Platform Release Version Synchronization (`v1.2.1`)**:
+  - Synchronized production release version `1.2.1+29` across Flutter engine, Linux Debian package (`.deb`), Windows setup installer (`.exe`), Android APK, and Web PWA targets.
+  - Updated all packaging scripts (`build.sh`, `packaging/linux/build_deb.sh`, `packaging/android/build_apk.sh`, `windows/installer/zen_clock_setup.iss`) for dynamic version extraction from `pubspec.yaml`.
+
+---
+
 ## [v1.2.0] - 2026-07-31
 
 ### 🌟 Major Release Milestone & Production Upgrades
